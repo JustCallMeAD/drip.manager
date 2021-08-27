@@ -591,7 +591,7 @@
                     class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden"
                   >
                     <img
-                      alt="Rubick Tailwind HTML Admin Template"
+                      alt="Drip Manager Tailwind HTML Admin Template"
                       :src="require(`@/assets/images/${faker.photos[0]}`)"
                     />
                   </div>

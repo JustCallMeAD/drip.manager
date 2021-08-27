@@ -2,52 +2,30 @@ const state = () => {
   return {
     menu: [
       {
-        icon: 'HomeIcon',
-        pageName: 'top-menu-dashboard',
-        title: 'Dashboard',
-        subMenu: [
-          {
-            icon: '',
-            pageName: 'top-menu-dashboard-overview-1',
-            title: 'Overview 1'
-          },
-          {
-            icon: '',
-            pageName: 'top-menu-dashboard-overview-2',
-            title: 'Overview 2'
-          },
-          {
-            icon: '',
-            pageName: 'top-menu-dashboard-overview-3',
-            title: 'Overview 3'
-          }
-        ]
+        icon: 'DownloadIcon',
+        pageName: 'top-menu-dashboard-overview-1',
+        title: 'Faucet'
       },
       {
-        icon: 'BoxIcon',
-        pageName: 'top-menu-menu-layout',
-        title: 'Menu Layout',
-        subMenu: [
-          {
-            icon: '',
-            pageName: 'side-menu-dashboard-overview-1',
-            title: 'Side Menu',
-            ignore: true
-          },
-          {
-            icon: '',
-            pageName: 'simple-menu-dashboard-overview-1',
-            title: 'Simple Menu',
-            ignore: true
-          },
-          {
-            icon: '',
-            pageName: 'top-menu-dashboard-overview-1',
-            title: 'Top Menu',
-            ignore: true
-          }
-        ]
+        icon: 'ShoppingCartIcon',
+        pageName: 'top-menu-dashboard-overview-2',
+        title: 'Fountain'
       },
+      {
+        icon: 'DropletIcon',
+        pageName: 'top-menu-dashboard-overview-3',
+        title: 'Reservoir'
+      },
+      {
+        icon: 'UsersIcon',
+        pageName: 'top-menu-dashboard-overview-3',
+        title: 'Team'
+      },
+      {
+        icon: 'DollarSignIcon',
+        pageName: 'top-menu-dashboard-overview-3',
+        title: 'Calculator'
+      }/*,
       {
         icon: 'ActivityIcon',
         pageName: 'top-menu-apps',
@@ -427,7 +405,7 @@ const state = () => {
             title: 'Image Zoom'
           }
         ]
-      }
+      } */
     ]
   }
 }

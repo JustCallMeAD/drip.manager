@@ -286,7 +286,7 @@
             </div>
             <TinySlider ref-key="announcementRef" class="py-5">
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -306,7 +306,7 @@
                 </div>
               </div>
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -326,7 +326,7 @@
                 </div>
               </div>
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -369,7 +369,7 @@
             </div>
             <TinySlider ref-key="newProjectsRef" class="py-5">
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -392,7 +392,7 @@
                 </div>
               </div>
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -411,7 +411,7 @@
                 </div>
               </div>
               <div class="px-5">
-                <div class="font-medium text-lg">Rubick Admin Template</div>
+                <div class="font-medium text-lg">Drip Manager Admin Template</div>
                 <div class="text-gray-700 dark:text-gray-600 mt-2">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's

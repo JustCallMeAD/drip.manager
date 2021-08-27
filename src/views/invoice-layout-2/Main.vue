@@ -96,7 +96,7 @@
               <tr>
                 <td class="border-b dark:border-dark-5">
                   <div class="font-medium whitespace-nowrap">
-                    Rubick HTML Admin Template
+                    Drip Manager HTML Admin Template
                   </div>
                   <div class="text-gray-600 text-sm mt-0.5 whitespace-nowrap">
                     Regular License

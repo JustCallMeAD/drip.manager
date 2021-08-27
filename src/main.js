@@ -6,6 +6,7 @@ import authManager from './auth/auth-manager'
 import globalComponents from './global-components'
 import utils from './utils'
 import './libs'
+import PrimeVue from 'primevue/config'
 
 // SASS Theme
 import './assets/sass/app.scss'
@@ -22,6 +23,7 @@ router.beforeEach((to, from, next) => {
 const app = createApp(App)
   .use(store)
   .use(router)
+  .use(PrimeVue)
 
 globalComponents(app)
 utils(app)

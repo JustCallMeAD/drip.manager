@@ -1,8 +1,8 @@
 {
-  "name": "rubick",
-  "version": "3.0.3",
+  "name": "drip-manager",
+  "version": "0.0.1",
   "private": true,
-  "description": "TailwindCSS HTML Admin Template",
+  "description": "A Drip management system for the Drip Community",
   "author": "Left4code",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -50,6 +50,8 @@
     "js-cookie": "^3.0.0",
     "litepicker": "^2.0.11",
     "moralis": "0.0.34",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.6.2",
     "tabulator-tables": "^4.9.3",
     "tiny-slider": "^2.9.3",
     "tippy.js": "^6.2.7",

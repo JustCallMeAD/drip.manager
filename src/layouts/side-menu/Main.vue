@@ -17,7 +17,7 @@
             src="@/assets/images/logo.svg"
           />
           <span class="hidden xl:block text-white text-lg ml-3">
-            Ru<span class="font-medium">bick</span>
+            Drip <span class="font-medium">Manager</span>
           </span>
         </router-link>
         <!-- END: Logo -->

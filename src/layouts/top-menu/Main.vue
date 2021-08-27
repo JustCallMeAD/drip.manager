@@ -19,109 +19,14 @@
             src="@/assets/images/logo.svg"
           />
           <span class="text-white text-lg ml-3">
-            Ru<span class="font-medium">bick</span>
+            Drip<span class="font-medium"> Manager</span>
           </span>
         </router-link>
         <!-- END: Logo -->
         <!-- BEGIN: Breadcrumb -->
         <div class="-intro-x breadcrumb breadcrumb--light mr-auto">
-          <a href="" class="">Application</a>
-          <ChevronRightIcon class="breadcrumb__icon" />
-          <a href="" class="breadcrumb--active">Dashboard</a>
         </div>
         <!-- END: Breadcrumb -->
-        <!-- BEGIN: Search -->
-        <div class="intro-x relative mr-3 sm:mr-6">
-          <div class="search hidden sm:block">
-            <input
-              type="text"
-              class="search__input form-control dark:bg-dark-1 border-transparent placeholder-theme-13"
-              placeholder="Search..."
-              @focus="showSearchDropdown"
-              @blur="hideSearchDropdown"
-            />
-            <SearchIcon class="search__icon dark:text-gray-300" />
-          </div>
-          <a class="notification notification--light sm:hidden" href="">
-            <SearchIcon class="notification__icon dark:text-gray-300" />
-          </a>
-          <div class="search-result" :class="{ show: searchDropdown }">
-            <div class="search-result__content">
-              <div class="search-result__content__title">Pages</div>
-              <div class="mb-5">
-                <a href class="flex items-center">
-                  <div
-                    class="w-8 h-8 bg-theme-18 text-theme-9 flex items-center justify-center rounded-full"
-                  >
-                    <InboxIcon class="w-4 h-4" />
-                  </div>
-                  <div class="ml-3">Mail Settings</div>
-                </a>
-                <a href class="flex items-center mt-2">
-                  <div
-                    class="w-8 h-8 bg-theme-17 text-theme-11 flex items-center justify-center rounded-full"
-                  >
-                    <UsersIcon class="w-4 h-4" />
-                  </div>
-                  <div class="ml-3">Users & Permissions</div>
-                </a>
-                <a href class="flex items-center mt-2">
-                  <div
-                    class="w-8 h-8 bg-theme-14 text-theme-10 flex items-center justify-center rounded-full"
-                  >
-                    <CreditCardIcon class="w-4 h-4" />
-                  </div>
-                  <div class="ml-3">Transactions Report</div>
-                </a>
-              </div>
-              <div class="search-result__content__title">Users</div>
-              <div class="mb-5">
-                <a
-                  v-for="(faker, fakerKey) in $_.take($f(), 4)"
-                  :key="fakerKey"
-                  href
-                  class="flex items-center mt-2"
-                >
-                  <div class="w-8 h-8 image-fit">
-                    <img
-                      alt="Drip Manager"
-                      class="rounded-full"
-                      :src="require(`@/assets/images/${faker.photos[0]}`)"
-                    />
-                  </div>
-                  <div class="ml-3">{{ faker.users[0].name }}</div>
-                  <div
-                    class="ml-auto w-48 truncate text-gray-600 text-xs text-right"
-                  >
-                    {{ faker.users[0].email }}
-                  </div>
-                </a>
-              </div>
-              <div class="search-result__content__title">Products</div>
-              <a
-                v-for="(faker, fakerKey) in $_.take($f(), 4)"
-                :key="fakerKey"
-                href
-                class="flex items-center mt-2"
-              >
-                <div class="w-8 h-8 image-fit">
-                  <img
-                    alt="Drip Manager"
-                    class="rounded-full"
-                    :src="require(`@/assets/images/${faker.images[0]}`)"
-                  />
-                </div>
-                <div class="ml-3">{{ faker.products[0].name }}</div>
-                <div
-                  class="ml-auto w-48 truncate text-gray-600 text-xs text-right"
-                >
-                  {{ faker.products[0].category }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-        <!-- END: Search -->
         <!-- BEGIN: Notifications -->
         <div class="intro-x dropdown mr-4 sm:mr-6">
           <div
@@ -334,11 +239,6 @@ import { helper as $h } from '@/utils/helper'
 import TopBar from '@/components/top-bar/Main.vue'
 import MobileMenu from '@/components/mobile-menu/Main.vue'
 import DarkModeSwitcher from '@/components/dark-mode-switcher/Main.vue'
-import {
-  searchDropdown,
-  showSearchDropdown,
-  hideSearchDropdown
-} from './index'
 import { nestedMenu, linkTo } from '@/layouts/side-menu'
 
 export default defineComponent({
@@ -349,7 +249,6 @@ export default defineComponent({
   },
   methods: {
     logout: () => {
-      alert('test')
     }
   },
   setup() {
@@ -375,9 +274,6 @@ export default defineComponent({
     })
 
     return {
-      searchDropdown,
-      showSearchDropdown,
-      hideSearchDropdown,
       formattedMenu,
       router,
       linkTo

@@ -219,7 +219,7 @@
                 <div class="ml-auto">472</div>
               </div>
               <div class="flex mt-1.5">
-                <div>/rubick…review/1674</div>
+                <div>/Drip Manager…review/1674</div>
                 <div class="ml-auto">294</div>
               </div>
               <div class="flex mt-1.5">

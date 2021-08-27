@@ -12,7 +12,7 @@
               :src="require(`@/assets/images/logo.svg`)"
             />
             <span class="text-white text-lg ml-3">
-              Ru<span class="font-medium">bick</span>
+              Drip <span class="font-medium">Manager</span>
             </span>
           </a>
           <div class="my-auto">

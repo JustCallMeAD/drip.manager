@@ -1,4 +1,4 @@
-# rubick
+# drip-manager
 
 ## Project setup
 
