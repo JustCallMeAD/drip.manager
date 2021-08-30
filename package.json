@@ -58,9 +58,9 @@
     "toastify-js": "^1.9.3",
     "tom-select": "^1.7.5",
     "velocity-animate": "^1.5.2",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0",
+    "vue": "3.2.6",
+    "vue-router": "4.0.11",
+    "vuex": "4.0.2",
     "xlsx": "^0.16.9",
     "zoom-vanilla.js": "^2.0.6"
   },

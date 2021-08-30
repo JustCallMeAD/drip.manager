@@ -4,41 +4,56 @@
     <MobileMenu />
     <!-- BEGIN: Top Bar -->
     <div
-      class="border-b border-theme-29 -mt-10 md:-mt-5 -mx-3 sm:-mx-8 px-3 sm:px-8 pt-3 md:pt-0 mb-10"
+      class="
+        border-b border-theme-29
+        -mt-10
+        md:-mt-5
+        -mx-3
+        sm:-mx-8
+        px-3
+        sm:px-8
+        pt-3
+        md:pt-0
+        mb-10
+      "
     >
       <div class="top-bar-boxed flex items-center">
         <!-- BEGIN: Logo -->
         <router-link
-          :to="{ name: 'top-menu-dashboard-overview-1' }"
+          :to="{ name: 'top-menu-faucet' }"
           tag="a"
           class="-intro-x hidden md:flex"
         >
-          <img
-            alt="Drip Manager"
-            class="w-6"
-            src="@/assets/images/logo.svg"
-          />
+          <img alt="Drip Manager" class="w-6" src="@/assets/images/logo.svg" />
           <span class="text-white text-lg ml-3">
             Drip<span class="font-medium"> Manager</span>
           </span>
         </router-link>
         <!-- END: Logo -->
         <!-- BEGIN: Breadcrumb -->
-        <div class="-intro-x breadcrumb breadcrumb--light mr-auto">
-        </div>
+        <div class="-intro-x breadcrumb breadcrumb--light mr-auto"></div>
         <!-- END: Breadcrumb -->
         <!-- BEGIN: Notifications -->
         <div class="intro-x dropdown mr-4 sm:mr-6">
-          <div
-            class="dropdown-toggle notification notification--light notification--bullet cursor-pointer"
+          <!-- <div
+            class="
+              dropdown-toggle
+              notification notification--light notification--bullet
+              cursor-pointer
+            "
             role="button"
             aria-expanded="false"
           >
             <BellIcon class="notification__icon dark:text-gray-300" />
-          </div>
-          <div class="notification-content pt-2 dropdown-menu">
+          </div> -->
+          <!-- <div class="notification-content pt-2 dropdown-menu">
             <div
-              class="notification-content__box dropdown-menu__content box dark:bg-dark-6"
+              class="
+                notification-content__box
+                dropdown-menu__content
+                box
+                dark:bg-dark-6
+              "
             >
               <div class="notification-content__title">Notifications</div>
               <div
@@ -54,7 +69,16 @@
                     :src="require(`@/assets/images/${faker.photos[0]}`)"
                   />
                   <div
-                    class="w-3 h-3 bg-theme-9 absolute right-0 bottom-0 rounded-full border-2 border-white"
+                    class="
+                      w-3
+                      h-3
+                      bg-theme-9
+                      absolute
+                      right-0
+                      bottom-0
+                      rounded-full
+                      border-2 border-white
+                    "
                   ></div>
                 </div>
                 <div class="ml-2 overflow-hidden">
@@ -74,13 +98,23 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <!-- END: Notifications -->
         <!-- BEGIN: Account Menu -->
         <div class="intro-x dropdown w-8 h-8">
           <div
-            class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in scale-110"
+            class="
+              dropdown-toggle
+              w-8
+              h-8
+              rounded-full
+              overflow-hidden
+              shadow-lg
+              image-fit
+              zoom-in
+              scale-110
+            "
             role="button"
             aria-expanded="false"
           >
@@ -91,48 +125,61 @@
           </div>
           <div class="dropdown-menu w-56">
             <div
-              class="dropdown-menu__content box bg-theme-26 dark:bg-dark-6 text-white"
+              class="
+                dropdown-menu__content
+                box
+                bg-theme-26
+                dark:bg-dark-6
+                text-white
+              "
             >
               <div class="p-4 border-b border-theme-27 dark:border-dark-3">
-                <div class="font-medium">{{ $f()[0].users[0].name }}</div>
-                <div class="text-xs text-theme-41 mt-0.5 dark:text-gray-600">
-                  {{ $f()[0].jobs[0] }}
+                <div class="font-medium">
+                  {{
+                    userAddress.substring(0, 5) +
+                    '...' +
+                    userAddress.substring(userAddress.length - 6)
+                  }}
                 </div>
               </div>
-              <div class="p-2">
+              <!-- <div class="p-2">
                 <a
                   href=""
-                  class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"
+                  class="
+                    flex
+                    items-center
+                    block
+                    p-2
+                    transition
+                    duration-300
+                    ease-in-out
+                    hover:bg-theme-1
+                    dark:hover:bg-dark-3
+                    rounded-md
+                  "
                 >
                   <UserIcon class="w-4 h-4 mr-2" /> Profile
                 </a>
-                <a
-                  href=""
-                  class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"
-                >
-                  <EditIcon class="w-4 h-4 mr-2" /> Add Account
-                </a>
-                <a
-                  href=""
-                  class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"
-                >
-                  <LockIcon class="w-4 h-4 mr-2" /> Reset Password
-                </a>
-                <a
-                  href=""
-                  class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"
-                >
-                  <HelpCircleIcon class="w-4 h-4 mr-2" />
-                  Help
-                </a>
-              </div>
+              </div> -->
               <div class="p-2 border-t border-theme-27 dark:border-dark-3">
                 <a
+                  href=""
                   @click="logout"
-                  class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"
+                  class="
+                    flex
+                    items-center
+                    block
+                    p-2
+                    transition
+                    duration-300
+                    ease-in-out
+                    hover:bg-theme-1
+                    dark:hover:bg-dark-3
+                    rounded-md
+                  "
                 >
                   <ToggleRightIcon class="w-4 h-4 mr-2" />
-                  Logout now!
+                  Logout
                 </a>
               </div>
             </div>
@@ -240,6 +287,7 @@ import TopBar from '@/components/top-bar/Main.vue'
 import MobileMenu from '@/components/mobile-menu/Main.vue'
 import DarkModeSwitcher from '@/components/dark-mode-switcher/Main.vue'
 import { nestedMenu, linkTo } from '@/layouts/side-menu'
+import authManager from '@/auth/auth-manager'
 
 export default defineComponent({
   components: {
@@ -248,7 +296,16 @@ export default defineComponent({
     DarkModeSwitcher
   },
   methods: {
-    logout: () => {
+    logout: function () {
+      const self = this
+      authManager
+        .logout()
+        .then(() => {
+          self.router.push({ name: 'login' })
+        })
+        .catch((e) => {
+          alert(e)
+        })
     }
   },
   setup() {
@@ -256,7 +313,9 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const formattedMenu = ref([])
-    const topMenu = computed(() => nestedMenu(store.state.topMenu.menu, route))
+    const topMenu = computed(() => {
+      return nestedMenu(store.state.topMenu.menu, route)
+    })
 
     watch(
       computed(() => route.path),
@@ -276,7 +335,8 @@ export default defineComponent({
     return {
       formattedMenu,
       router,
-      linkTo
+      linkTo,
+      userAddress: authManager.getCurrentUserAddress()
     }
   }
 })

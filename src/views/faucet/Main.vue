@@ -1,9 +1,20 @@
 <template>
   <div class="grid grid-cols-12 gap-6">
-    <div class="col-span-12 2xl:col-span-9">
+    <!-- START : BUDDY WARNING -->
+    <div v-if="isBuddyRequired" class="col-span-12">
+      <div class="col-span-12 mt-2">
+        <Message severity="warn" :closable="false">
+          A Buddy must be specified to fully utilize the Faucet. Go to the Buddy
+          section
+        </Message>
+      </div>
+    </div>
+    <!-- END : BUDDY WARNING -->
+
+    <div class="col-span-12">
       <div class="grid grid-cols-12 gap-6">
         <!-- BEGIN: General -->
-        <div class="col-span-12 mt-8">
+        <div class="col-span-12 mt-2">
           <!-- <div class="intro-y flex items-center h-10">
             <h2 class="text-lg font-medium truncate mr-5">Faucet</h2>
           </div> -->
@@ -103,13 +114,14 @@
             </div>
           </div>
         </div>
+
         <!-- END: General Report -->
         <!-- BEGIN: Price stats and actions -->
-        <div class="col-span-12 lg:col-span-4 mt-2">
-          <div class="intro-y block sm:flex items-center h-10">
-            <h2 class="text-lg font-medium truncate mr-5">Price stats</h2>
-          </div>
-          <div class="intro-y box p-5 mt-12 sm:mt-2">
+        <div class="col-span-12 mt-2 intro-y">
+          <h2 class="text-lg font-medium truncate mr-5">Price stats</h2>
+        </div>
+        <div class="col-span-12 xl:col-span-4 mt-2 intro-y">
+          <div class="intro-y box p-5">
             <div class="flex flex-col xl:flex-row xl:items-center">
               <div class="flex">
                 <div>
@@ -186,8 +198,8 @@
             </div>
           </div>
         </div>
-
-        <div class="col-span-12 lg:col-span-4 mt-12 intro-y">
+        <!-- ACTION BUTTON -->
+        <div class="col-span-12 xl:col-span-8 mt-2 intro-y">
           <button
             :disabled="contractCall || isBuddyRequired"
             @click="hydrate"
@@ -203,15 +215,128 @@
             <DollarSignIcon class="w-4 h-4 mr-2" /> Claim
           </button>
         </div>
-        <!-- END: Price charts -->
+        <!-- END ACTION BUTTON -->
+        <!-- END:  Price stats and actions -->
+
+        <!-- BEGIN: BUDDY INPUT -->
+        <div class="col-span-12">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="col-span-2 mt-2 intro-y">
+              <h2 class="text-lg font-medium truncate mr-5">Buddy</h2>
+            </div>
+            <div class="col-span-2 xl:col-span-1">
+              <div
+                class="intro-y box"
+                v-bind:class="{ required: isBuddyRequired }"
+              >
+                <div id="input" class="p-5">
+                  <div>
+                    <div class="mt-3">
+                      <label for="regular-form-3" class="form-label"
+                        >Buddy Address</label
+                      >
+                      <input
+                        id="regular-form-3"
+                        :disabled="isBuddySpecified || !isBuddyRequired"
+                        type="text"
+                        class="form-control"
+                        placeholder="0x0000000000000000000000000000000000000000"
+                        v-model="inputBuddyAddress"
+                      />
+                      <div class="form-help">
+                        Enter your buddy address here.
+                      </div>
+                    </div>
+                    <div v-if="isBuddySpecified" class="mt-3">
+                      <label for="regular-form-4" class="form-label"
+                        >Airdrop Sent</label
+                      >
+                      <div class="input-group">
+                        <input
+                          id="regular-form-3"
+                          :disabled="true"
+                          type="text"
+                          class="form-control"
+                          :value="buddyAirdropSent"
+                        />
+                        <div id="input-group-price" class="input-group-text">
+                          Drips
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="isBuddySpecified" class="mt-3">
+                      <label for="regular-form-4" class="form-label"
+                        >Airdrop Received</label
+                      >
+                      <div class="input-group">
+                        <input
+                          id="regular-form-3"
+                          :disabled="true"
+                          type="text"
+                          class="form-control"
+                          :value="buddyAirdropReceived"
+                        />
+                        <div id="input-group-price" class="input-group-text">
+                          Drips
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="isBuddySpecified" class="mt-3">
+                      <label for="regular-form-4" class="form-label"
+                        >Total Deposits</label
+                      >
+                      <div class="input-group">
+                        <input
+                          id="regular-form-3"
+                          :disabled="true"
+                          type="text"
+                          class="form-control"
+                          :value="buddyTotalDeposits"
+                        />
+                        <div id="input-group-price" class="input-group-text">
+                          Drips
+                        </div>
+                      </div>
+                    </div>
+                    <Message
+                      v-if="isBuddySpecified && isBuddyRequired"
+                      severity="warn"
+                      :closable="false"
+                    >
+                      Your buddy is set for life, choose it wisely!
+                    </Message>
+                    <button
+                      v-if="!isBuddySpecified && isBuddyRequired"
+                      class="btn btn-primary mt-5"
+                      @click="previewBuddy"
+                    >
+                      Next
+                    </button>
+                    <button
+                      v-if="isBuddySpecified && isBuddyRequired"
+                      class="btn btn-primary mt-5"
+                      @click="confirmBuddy"
+                    >
+                      Confirm</button
+                    >&nbsp;
+                    <button
+                      v-if="isBuddySpecified && isBuddyRequired"
+                      ref="cancelBuddy"
+                      class="btn btn-secondary mt-5"
+                      @click="cancelBuddy"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END: BUDDY INPUT -->
       </div>
     </div>
-    <div class="col-span-12 2xl:col-span-9">
-      <Message severity="success">Welcome to PrimeVue</Message>
-      <ProgressBar value="10" />
-    </div>
   </div>
-
 </template>
 
 <script>
@@ -220,28 +345,78 @@ import smManager from '@/smartcontracts/smartcontracts-manager'
 import authManager from '@/auth/auth-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import Message from 'primevue/message'
-import ProgressBar from 'primevue/progressbar'
 
 const widthStyle = 'width: [pct]%'
 
 let isUpdating = false
 
 export default defineComponent({
-  components: { Message, ProgressBar },
+  components: { Message },
   async mounted() {
     const faucet = await smManager.getFaucetContract(
       authManager.getCurrentUserAddress()
     )
 
+    const buddy = await smManager.getBuddyContract(
+      authManager.getCurrentUserAddress()
+    )
     const fountain = await smManager.getFountainContract()
 
     const self = this
 
     const buddyAddress = await faucet.getBuddyAddress()
-    if (!buddyAddress || buddyAddress === '') {
+    if (
+      !buddyAddress ||
+      buddyAddress === '0x0000000000000000000000000000000000000000'
+    ) {
       this.isBuddyRequired = true
     } else {
       this.isBuddyRequired = false
+
+      const userInfoTotals = await faucet.getUserInfoTotals(buddyAddress)
+      self.isBuddySpecified = true
+      self.inputBuddyAddress = buddyAddress
+      self.buddyAirdropSent = userInfoTotals.airdrops_total.toFixed(3)
+      self.buddyAirdropReceived = userInfoTotals.airdrops_received.toFixed(3)
+      self.buddyTotalDeposits = userInfoTotals.total_deposits.toFixed(3)
+    }
+
+    this.previewBuddy = async function () {
+      if (!self.inputBuddyAddress) {
+        alert('Buddy Address field is required')
+        return Promise.resolve()
+      }
+
+      return faucet
+        .getUserInfoTotals(self.inputBuddyAddress)
+        .then((userInfoTotals) => {
+          self.isBuddySpecified = true
+
+          self.buddyAirdropSent = userInfoTotals.airdrops_total.toFixed(3)
+          self.buddyAirdropReceived =
+            userInfoTotals.airdrops_received.toFixed(3)
+          self.buddyTotalDeposits = userInfoTotals.total_deposits.toFixed(3)
+        })
+        .catch((e) => {
+          alert(JSON.stringify(e))
+        })
+    }
+
+    this.cancelBuddy = function () {
+      self.isBuddySpecified = false
+      self.inputBuddyAddress = ''
+      self.buddyAirdropSent = 0
+      self.buddyAirdropReceived = 0
+      self.buddyTotalDeposits = 0
+    }
+
+    this.confirmBuddy = async function () {
+      return buddy
+        .setBuddy(self.inputBuddyAddress)
+        .catch((e) => {
+          alert(JSON.stringify(e))
+        })
+        .finally(() => {})
     }
 
     this.hydrate = async function () {
@@ -382,7 +557,11 @@ export default defineComponent({
     const claim = async function () {}
 
     const contractCall = ref(false)
-    const isBuddyRequired = ref(true)
+    const isBuddyRequired = ref(false)
+    const isBuddySpecified = ref(false)
+    const inputBuddyAddress = ref('')
+
+    const buddyAirdropSent = ref(0)
 
     return {
       dripFiatValue,
@@ -400,9 +579,20 @@ export default defineComponent({
       maxPayoutProgressStyle,
       contractCall,
       isBuddyRequired,
+      isBuddySpecified,
+      inputBuddyAddress,
+      buddyAirdropSent,
       hydrate,
       claim
     }
-  }
+  },
+  methods: {}
 })
 </script>
+<style scoped>
+.required {
+  border: 3px;
+  border-style: solid;
+  border-color: #ff0000;
+}
+</style>

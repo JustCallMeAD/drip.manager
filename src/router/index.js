@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TopMenu from '../layouts/top-menu/Main.vue'
-import DashboardOverview1 from '../views/dashboard-overview-1/Main.vue'
+import DashboardOverview1 from '../views/faucet/Main.vue'
 import DashboardOverview2 from '../views/dashboard-overview-2/Main.vue'
 import DashboardOverview3 from '../views/dashboard-overview-3/Main.vue'
+import DashboardOverview4 from '../views/dashboard-overview-4/Main.vue'
+import DashboardOverview5 from '../views/dashboard-overview-5/Main.vue'
 import Inbox from '../views/inbox/Main.vue'
 import FileManager from '../views/file-manager/Main.vue'
 import PointOfSale from '../views/point-of-sale/Main.vue'
@@ -66,18 +68,28 @@ const routes = [
     children: [
       {
         path: '/',
-        name: 'top-menu-dashboard-overview-1',
+        name: 'top-menu-faucet',
         component: DashboardOverview1
       },
       {
-        path: 'dashboard-overview-2',
-        name: 'top-menu-dashboard-overview-2',
+        path: 'fountain',
+        name: 'top-menu-fountain',
         component: DashboardOverview2
       },
       {
-        path: 'dashboard-overview-3',
-        name: 'top-menu-dashboard-overview-3',
+        path: 'reservoir',
+        name: 'top-menu-reservoir',
         component: DashboardOverview3
+      },
+      {
+        path: 'team',
+        name: 'top-menu-team',
+        component: DashboardOverview4
+      },
+      {
+        path: 'calculator',
+        name: 'top-menu-calculator',
+        component: DashboardOverview5
       },
       {
         path: 'inbox',

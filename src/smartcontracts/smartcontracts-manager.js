@@ -1,6 +1,7 @@
 import Moralis from 'moralis'
 import FaucetContract from './faucet-contract.js'
 import FountainContract from './fountain-contract.js'
+import BuddyContract from './buddy-contract.js'
 let web3
 
 const init = async () => {
@@ -14,6 +15,9 @@ export default {
   async getWeb3() {
     await init()
     return web3
+  },
+  async getBuddyContract(userAddress) {
+    return init().then(web3 => new BuddyContract(web3, userAddress)).catch(e => console.log(e))
   },
   async getFaucetContract(userAddress) {
     return init().then(web3 => new FaucetContract(web3, userAddress)).catch(e => console.log(e))

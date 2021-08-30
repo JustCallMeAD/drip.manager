@@ -57,7 +57,6 @@
               >
                 Metamask
               </button>
-              <router-link :to="{name: 'register'}">Register</router-link>
             </div>
           </div>
         </div>

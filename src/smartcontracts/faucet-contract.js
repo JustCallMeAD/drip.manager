@@ -16,28 +16,40 @@ class FaucetContract {
     )
   }
 
-  async getUserInfoTotals() {
-    return await this.contract.methods.userInfoTotals(this.userAddress).call()
+  async getUserInfoTotals(address) {
+    const userInfoTotals = await this.contract.methods
+      .userInfoTotals(!address ? this.userAddress : address)
+      .call()
+    return {
+      referrals: userInfoTotals.referrals,
+      total_deposits: userInfoTotals.total_deposits / decimals,
+      total_payouts: userInfoTotals.total_payouts / decimals,
+      total_structure: userInfoTotals.total_structure,
+      airdrops_total: userInfoTotals.airdrops_total / decimals,
+      airdrops_received: userInfoTotals.airdrops_received / decimals
+    }
   }
 
-  async getUserInfo() {
-    return await this.contract.methods.userInfo(this.userAddress).call()
+  async getUserInfo(address) {
+    return await this.contract.methods
+      .userInfo(!address ? this.userAddress : address)
+      .call()
   }
 
   async getDepositBalance(precision) {
     const userInfoTotals = await this.getUserInfoTotals()
-    return round(userInfoTotals.total_deposits / decimals, precision)
+    return round(userInfoTotals.total_deposits, precision)
   }
 
   async getClaimedAmount(precision) {
     const userInfoTotals = await this.getUserInfoTotals()
-    return round(userInfoTotals.total_payouts / decimals, precision)
+    return round(userInfoTotals.total_payouts, precision)
   }
 
   async getMaxPayout(precision) {
     return round(
-      (await this.contract.methods.payoutOf(this.userAddress).call()).max_payout /
-        decimals,
+      (await this.contract.methods.payoutOf(this.userAddress).call())
+        .max_payout / decimals,
       precision
     )
   }

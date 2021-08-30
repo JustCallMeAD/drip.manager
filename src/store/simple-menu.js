@@ -42,7 +42,7 @@ const state = () => {
           },
           {
             icon: '',
-            pageName: 'top-menu-dashboard-overview-1',
+            pageName: 'top-menu-faucet',
             title: 'Top Menu',
             ignore: true
           }

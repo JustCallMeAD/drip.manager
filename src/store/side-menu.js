@@ -25,7 +25,7 @@ const state = () => {
           },
           {
             icon: '',
-            pageName: 'top-menu-dashboard-overview-1',
+            pageName: 'top-menu-asdfasdf',
             title: 'Top Menu',
             ignore: true
           }

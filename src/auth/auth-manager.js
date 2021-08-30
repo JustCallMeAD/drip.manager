@@ -13,6 +13,6 @@ export default {
     return await Moralis.Web3.authenticate()
   },
   logout: async () => {
-    await Moralis.User.logOut()
+    return Moralis.User.logOut()
   }
 }
