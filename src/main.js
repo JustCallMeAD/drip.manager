@@ -14,19 +14,42 @@ import 'primeicons/primeicons.css'
 // SASS Theme
 import './assets/sass/app.scss'
 
-router.beforeEach((to, from, next) => {
-  const currentUser = authManager.getCurrentUser()
-  if (to.name !== 'login' && !currentUser) {
+const guestPath = ['/calculator']
+
+router.beforeEach(async (to, from, next) => {
+  if (guestPath.includes(to.path)) {
+    next()
+  }
+
+  const walletAddress = await window.ethereum.request({ method: 'eth_requestAccounts' })
+  console.log(walletAddress[0])
+  // const web3 = await authManager.getWeb3()
+  // console.log('here')
+  // const accounts = await web3.eth.getAccounts()
+  // console.log(accounts)
+  const currentUserAddress = authManager.getCurrentUserAddress()
+
+  if (to.name !== 'login' && currentUserAddress && currentUserAddress != walletAddress[0]) {
+    next({ name: 'login' })
+    return
+  }
+
+  // if (!accounts || accounts.length == 0) {
+  //   if (currentUser) {
+  //     await authManager.logout()
+  //   }
+
+  //   next({ name: 'login' })
+  // } else {
+  if (to.name !== 'login' && !currentUserAddress) {
     next({ name: 'login' })
   } else {
     next()
   }
+  // }
 })
 
-const app = createApp(App)
-  .use(store)
-  .use(router)
-  .use(PrimeVue)
+const app = createApp(App).use(store).use(router).use(PrimeVue)
 
 globalComponents(app)
 utils(app)

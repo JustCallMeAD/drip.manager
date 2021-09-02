@@ -135,11 +135,7 @@
             >
               <div class="p-4 border-b border-theme-27 dark:border-dark-3">
                 <div class="font-medium">
-                  {{
-                    userAddress.substring(0, 5) +
-                    '...' +
-                    userAddress.substring(userAddress.length - 6)
-                  }}
+                  {{ getFormattedUser() }}
                 </div>
               </div>
               <!-- <div class="p-2">
@@ -161,7 +157,10 @@
                   <UserIcon class="w-4 h-4 mr-2" /> Profile
                 </a>
               </div> -->
-              <div class="p-2 border-t border-theme-27 dark:border-dark-3">
+              <div
+                v-if="getFormattedUser() !== 'Guest'"
+                class="p-2 border-t border-theme-27 dark:border-dark-3"
+              >
                 <a
                   href=""
                   @click="logout"
@@ -181,6 +180,28 @@
                   <ToggleRightIcon class="w-4 h-4 mr-2" />
                   Logout
                 </a>
+              </div>
+              <div
+                v-else
+                class="p-2 border-t border-theme-27 dark:border-dark-3"
+              >
+                <router-link
+                  :to="{ name: 'login' }"
+                  tag="a"
+                  class="
+                    flex
+                    items-center
+                    block
+                    p-2
+                    transition
+                    duration-300
+                    ease-in-out
+                    hover:bg-theme-1
+                    dark:hover:bg-dark-3
+                    rounded-md
+                  "
+                  >Login</router-link
+                >
               </div>
             </div>
           </div>
@@ -329,14 +350,32 @@ export default defineComponent({
         .removeClass('error-page')
         .removeClass('login')
         .addClass('main')
-      formattedMenu.value = $h.toRaw(topMenu.value)
+      const isGuest = authManager.isGuest()
+      const menu = $h.toRaw(topMenu.value).filter(item => (isGuest && item.access === 'guest') || !isGuest)
+      formattedMenu.value = menu
+      console.log($h.toRaw(topMenu.value))
     })
+
+    const getFormattedUser = function () {
+      if (authManager.isGuest()) {
+        return 'Guest'
+      } else {
+        const userAddress = authManager.getCurrentUserAddress()
+
+        return (
+          userAddress.substring(0, 5) +
+          '...' +
+          userAddress.substring(userAddress.length - 6)
+        )
+      }
+    }
 
     return {
       formattedMenu,
       router,
       linkTo,
-      userAddress: authManager.getCurrentUserAddress()
+      isGuest: authManager.isGuest(),
+      getFormattedUser
     }
   }
 })

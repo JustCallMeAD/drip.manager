@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TopMenu from '../layouts/top-menu/Main.vue'
-import DashboardOverview1 from '../views/faucet/Main.vue'
-import DashboardOverview2 from '../views/dashboard-overview-2/Main.vue'
-import DashboardOverview3 from '../views/dashboard-overview-3/Main.vue'
-import DashboardOverview4 from '../views/dashboard-overview-4/Main.vue'
-import DashboardOverview5 from '../views/dashboard-overview-5/Main.vue'
+import DripFaucet from '../views/drip-faucet/Main.vue'
+import DripFountain from '../views/drip-fountain/Main.vue'
+import DripReservoir from '../views/drip-reservoir/Main.vue'
+import DripTeam from '../views/drip-team/Main.vue'
+import DripCalculator from '../views/drip-calculator/Main.vue'
 import Inbox from '../views/inbox/Main.vue'
 import FileManager from '../views/file-manager/Main.vue'
 import PointOfSale from '../views/point-of-sale/Main.vue'
@@ -69,27 +69,27 @@ const routes = [
       {
         path: '/',
         name: 'top-menu-faucet',
-        component: DashboardOverview1
+        component: DripFaucet
       },
       {
         path: 'fountain',
         name: 'top-menu-fountain',
-        component: DashboardOverview2
+        component: DripFountain
       },
       {
         path: 'reservoir',
         name: 'top-menu-reservoir',
-        component: DashboardOverview3
+        component: DripReservoir
       },
       {
         path: 'team',
         name: 'top-menu-team',
-        component: DashboardOverview4
+        component: DripTeam
       },
       {
         path: 'calculator',
         name: 'top-menu-calculator',
-        component: DashboardOverview5
+        component: DripCalculator
       },
       {
         path: 'inbox',

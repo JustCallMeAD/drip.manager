@@ -43,7 +43,7 @@ export default defineComponent({
       if (data >= 8 && data <= 14) {
         return '#1c3faaa6'
       } else if (data >= 15) {
-        return '#1C3FAA'
+        return '#2C3FAB'
       }
 
       return '#1c3faa59'

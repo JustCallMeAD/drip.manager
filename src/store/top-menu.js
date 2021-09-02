@@ -24,7 +24,8 @@ const state = () => {
       {
         icon: 'DollarSignIcon',
         pageName: 'top-menu-calculator',
-        title: 'Calculator'
+        title: 'Calculator',
+        access: 'guest'
       }
     ]
   }

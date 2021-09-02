@@ -1,11 +1,58 @@
 <template>
-  <Chart
-    type="pie"
-    :width="width"
-    :height="height"
-    :data="data"
-    :options="options"
-  />
+  <div class="intro-y box p-5 mt-5">
+    <h2 class="text-lg font-medium truncate mr-5">Deposits spread</h2>
+    <Chart
+      type="pie"
+      :width="width"
+      :height="height"
+      :data="data"
+      :options="options"
+    />
+    <div class="mt-8">
+      <div class="flex items-center">
+        <div class="w-2 h-2 bg-theme-11 rounded-full mr-3"></div>
+        <span class="truncate">17 - 30 Years old</span>
+        <div
+          class="
+            h-px
+            flex-1
+            border border-r border-dashed border-gray-300
+            mx-3
+            xl:hidden
+          "
+        ></div>
+        <span class="font-medium xl:ml-auto">62%</span>
+      </div>
+      <div class="flex items-center mt-4">
+        <div class="w-2 h-2 bg-theme-1 rounded-full mr-3"></div>
+        <span class="truncate">31 - 50 Years old</span>
+        <div
+          class="
+            h-px
+            flex-1
+            border border-r border-dashed border-gray-300
+            mx-3
+            xl:hidden
+          "
+        ></div>
+        <span class="font-medium xl:ml-auto">33%</span>
+      </div>
+      <div class="flex items-center mt-4">
+        <div class="w-2 h-2 bg-theme-12 rounded-full mr-3"></div>
+        <span class="truncate">>= 50 Years old</span>
+        <div
+          class="
+            h-px
+            flex-1
+            border border-r border-dashed border-gray-300
+            mx-3
+            xl:hidden
+          "
+        ></div>
+        <span class="font-medium xl:ml-auto">10%</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -31,7 +78,7 @@ export default defineComponent({
         labels: ['Yellow', 'Dark'],
         datasets: [
           {
-            data: [15, 10, 65],
+            data: [60, 10, 65],
             backgroundColor: ['#FF8B26', '#FFC533', '#285FD3'],
             hoverBackgroundColor: ['#FF8B26', '#FFC533', '#285FD3'],
             borderWidth: 5,

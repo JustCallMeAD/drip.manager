@@ -3,16 +3,40 @@ Moralis.initialize('xYeTdqvHv8FkeH22TpKhNbWYjHkBGyLKWys3kjXD')
 Moralis.serverURL = 'https://fz1jf2tm3lvr.moralisweb3.com:2053/server'
 
 export default {
+  getWeb3: () => {
+    return Moralis.Web3.enable()
+  },
+  getCloudRunner: () => {
+    return Moralis.Cloud.run
+  },
   getCurrentUser: () => {
     return Moralis.User.current()
   },
   getCurrentUserAddress: () => {
-    return Moralis.User.current().get('ethAddress')
+    const currentUser = Moralis.User.current()
+    return !currentUser ? undefined : currentUser.get('ethAddress')
   },
-  authenticate: async () => {
-    return await Moralis.Web3.authenticate()
+  authenticate: (router) => {
+    const disconnect = async () => {
+      await Moralis.User.logOut()
+      await router.push({ path: '/login' })
+    }
+    Moralis.Web3.onAccountsChanged(function (accounts) {
+      disconnect()
+    })
+    Moralis.Web3.onDisconnect(function (accounts) {
+      disconnect()
+    })
+    Moralis.Web3.onChainChanged(function (accounts) {
+      disconnect()
+    })
+
+    return Moralis.Web3.authenticate()
   },
-  logout: async () => {
+  logout: () => {
     return Moralis.User.logOut()
+  },
+  isGuest: () => {
+    return !Moralis.User.current()
   }
 }
