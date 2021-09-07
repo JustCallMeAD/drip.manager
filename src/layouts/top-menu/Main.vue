@@ -353,7 +353,6 @@ export default defineComponent({
       const isGuest = authManager.isGuest()
       const menu = $h.toRaw(topMenu.value).filter(item => (isGuest && item.access === 'guest') || !isGuest)
       formattedMenu.value = menu
-      console.log($h.toRaw(topMenu.value))
     })
 
     const getFormattedUser = function () {

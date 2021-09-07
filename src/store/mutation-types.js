@@ -1,2 +1,4 @@
 export const SET_DARK_MODE = 'SET_DARK_MODE'
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED'
+export const SET_USER_ADDRESS = 'SET_USER_ADDRESS'
+export const INIT = 'INIT'

@@ -1,7 +1,7 @@
-import Moralis from 'moralis'
 import FaucetContract from './faucet-contract.js'
 import FountainContract from './fountain-contract.js'
 import BuddyContract from './buddy-contract.js'
+import DripContract from './drip-contract.js'
 
 const Web3 = require('web3')
 
@@ -10,7 +10,7 @@ let archiveWeb3
 
 const init = async () => {
   if (!web3) {
-    web3 = await Moralis.Web3.enable()
+    web3 = new Web3(await window.ethereum)
   }
 
   // Archive nodes are useful to get historical data from previous blocks
@@ -20,13 +20,18 @@ const init = async () => {
     )
     archiveWeb3 = new Web3(provider)
   }
-  // return { web3, archiveWeb3 }
 }
 
 export default {
   async getWeb3() {
     await init()
     return web3
+  },
+  async getBnbBalanceOf(userAddress) {
+    return init()
+      .then(() => web3.eth.getBalance(userAddress))
+      .then((value) => value / 10 ** 18)
+      .catch((e) => console.log(e))
   },
   async getBuddyContract(userAddress) {
     return init()
@@ -40,7 +45,14 @@ export default {
   },
   async getFountainContract() {
     return init()
-      .then(() => new FountainContract(archiveWeb3))
+      .then(() => {
+        return new FountainContract(archiveWeb3, web3)
+      })
+      .catch((e) => console.log(e))
+  },
+  async getDripContract() {
+    return init()
+      .then(() => new DripContract(web3))
       .catch((e) => console.log(e))
   }
 }

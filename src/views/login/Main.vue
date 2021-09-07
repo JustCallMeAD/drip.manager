@@ -118,6 +118,7 @@ import router from '@/router'
 import { defineComponent, onMounted } from 'vue'
 import DarkModeSwitcher from '@/components/dark-mode-switcher/Main.vue'
 import authManager from '@/auth/auth-manager'
+import store from '@/store'
 
 export default defineComponent({
   components: {
@@ -135,7 +136,10 @@ export default defineComponent({
     login: () => {
       authManager
         .authenticate(router)
-        .then(() => router.push({ path: '/' }))
+        .then((user) => {
+          router.push({ path: '/' })
+          store.dispatch('main/setUserAddress', user.get('ethAddress'))
+        })
         .catch((e) => alert(JSON.stringify(e)))
     }
   }

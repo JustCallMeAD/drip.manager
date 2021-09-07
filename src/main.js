@@ -10,6 +10,7 @@ import PrimeVue from 'primevue/config'
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
+import Moralis from 'moralis'
 
 // SASS Theme
 import './assets/sass/app.scss'
@@ -21,32 +22,44 @@ router.beforeEach(async (to, from, next) => {
     next()
   }
 
-  const walletAddress = await window.ethereum.request({ method: 'eth_requestAccounts' })
-  console.log(walletAddress[0])
-  // const web3 = await authManager.getWeb3()
-  // console.log('here')
-  // const accounts = await web3.eth.getAccounts()
-  // console.log(accounts)
-  const currentUserAddress = authManager.getCurrentUserAddress()
+  try {
+    const walletAddress = await window.ethereum.request({
+      method: 'eth_requestAccounts'
+    })
 
-  if (to.name !== 'login' && currentUserAddress && currentUserAddress != walletAddress[0]) {
+    const currentUserAddress = authManager.getCurrentUserAddress()
+
+    if (
+      to.name !== 'login' &&
+      currentUserAddress &&
+      currentUserAddress !== walletAddress[0]
+    ) {
+      next({ name: 'login' })
+      return
+    }
+    if (to.name !== 'login' && !currentUserAddress) {
+      next({ name: 'login' })
+    } else {
+      next()
+    }
+  } catch (e) {
     next({ name: 'login' })
-    return
-  }
-
-  // if (!accounts || accounts.length == 0) {
-  //   if (currentUser) {
-  //     await authManager.logout()
-  //   }
-
-  //   next({ name: 'login' })
-  // } else {
-  if (to.name !== 'login' && !currentUserAddress) {
-    next({ name: 'login' })
-  } else {
-    next()
   }
   // }
+})
+
+const disconnect = async () => {
+  await Moralis.User.logOut()
+  await router.push({ path: '/login' })
+}
+Moralis.Web3.onAccountsChanged(function (accounts) {
+  disconnect()
+})
+Moralis.Web3.onDisconnect(function (accounts) {
+  disconnect()
+})
+Moralis.Web3.onChainChanged(function (accounts) {
+  disconnect()
 })
 
 const app = createApp(App).use(store).use(router).use(PrimeVue)

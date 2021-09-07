@@ -4,7 +4,7 @@ Moralis.serverURL = 'https://fz1jf2tm3lvr.moralisweb3.com:2053/server'
 
 export default {
   getWeb3: () => {
-    return Moralis.Web3.enable()
+    return window.etheruem
   },
   getCloudRunner: () => {
     return Moralis.Cloud.run

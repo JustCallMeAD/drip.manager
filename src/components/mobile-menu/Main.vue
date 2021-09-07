@@ -134,7 +134,7 @@ export default defineComponent({
     const store = useStore()
     const formattedMenu = ref([])
     const mobileMenu = computed(() =>
-      nestedMenu(store.state.sideMenu.menu, route)
+      nestedMenu(store.state.topMenu.menu, route)
     )
 
     watch(

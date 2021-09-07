@@ -5,16 +5,14 @@
     </h2>
     <Chart
       :key="'theChart'"
-      type="pie"
+      type="bar"
       :width="width"
       :height="height"
       :data="data"
       :options="options"
     />
     <div class="mt-4">
-      <div
-        class="flex items-center"
-      >
+      <div class="flex items-center">
         <div class="w-2 h-2 mr-3"></div>
         <span class="truncate font-medium">Range</span>
         <div
@@ -46,6 +44,29 @@
         ></div>
         <span class="font-medium xl:ml-auto">{{ chartData[index] }}</span>
       </div>
+      <div class="flex items-center">
+        <div
+          class="
+            w-px
+            h-12
+            border border-r border-solid border-gray-300
+            dark:border-dark-5
+            mx-4
+            xl:mx-5
+          "
+        ></div>
+        <span class="truncate font-bold">Total faucet drippers</span>
+        <div
+          class="
+            h-px
+            flex-1
+            border border-r border-dashed border-gray-300
+            mx-3
+            xl:hidden
+          "
+        ></div>
+        <span class="font-medium xl:ml-auto font-bold border-t-2">{{ chartDataTotalHolder }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -74,6 +95,7 @@ export default defineComponent({
     })
 
     this.chartData = stats.results
+    this.chartDataTotalHolder = stats.totalDistinctRange
   },
   setup() {
     const store = useStore()
@@ -81,6 +103,8 @@ export default defineComponent({
 
     const chartData = ref([])
     const chartDataHolder = computed(() => chartData.value)
+
+    const chartDataTotalHolder = ref(0)
 
     const chartBackgroudColor = computed(() => [
       '#6247aa',
@@ -117,6 +141,7 @@ export default defineComponent({
     const data = computed(() => {
       return {
         labels: chartLegend.value,
+        chartDataTotalHolder,
         datasets: [
           {
             data: chartDataHolder.value,
@@ -131,7 +156,8 @@ export default defineComponent({
     const options = computed(() => {
       return {
         legend: {
-          display: false
+          display: false,
+          position: 'chartArea'
         }
       }
     })

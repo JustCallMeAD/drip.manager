@@ -261,11 +261,12 @@
               >
                 <DollarSignIcon class="w-4 h-4 mr-2" /> Claim
               </button>
+              <PlayerLookupModal />
             </div>
             <!-- END: ACTION BUTTON-->
             <!-- BEGIN: BUDDY INPUT -->
             <div class="col-span-12">
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-2 gap-3">
                 <div class="col-span-2 mt-2 intro-y">
                   <h2 class="text-lg font-medium truncate mr-5">Buddy</h2>
                 </div>
@@ -396,6 +397,42 @@
         <div class="col-span-12 xl:col-span-3 intro-y">
           <ReportPieChartDeposits :height="250" class="mt-3" />
         </div>
+        <div class="col-span-12 xl:col-span-3 intro-y">
+          <div class="box p-5 mt-3">
+            <div class="flex">
+              <div class="text-base text-gray-600 mt-1">
+                &nbsp;Other statistics comming soon
+                <div class="progress">
+                  <div
+                    class="progress-bar w-1/2 bg-theme-1"
+                    role="progressbar"
+                    aria-valuenow="0"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+                <div class="progress mt-3">
+                  <div
+                    class="progress-bar w-2/3 bg-theme-1"
+                    role="progressbar"
+                    aria-valuenow="0"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+                <div class="progress mt-3">
+                  <div
+                    class="progress-bar w-3/4 bg-theme-1"
+                    role="progressbar"
+                    aria-valuenow="0"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -407,212 +444,239 @@ import smManager from '@/smartcontracts/smartcontracts-manager'
 import authManager from '@/auth/auth-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import Message from 'primevue/message'
-import Moralis from 'moralis'
 import ReportPieChartDeposits from '@/components/report-pie-chart-deposits/Main.vue'
+import PlayerLookupModal from '@/views/faucet-player-lookup-modal/Main.vue'
+import store from '@/store'
+const decimals = 10 ** 18
+
+const cloud = authManager.getCloudRunner()
 
 const widthStyle = 'width: [pct]%'
 
 let isUpdating = false
 
 export default defineComponent({
-  components: { Message, ReportPieChartDeposits },
+  components: { Message, ReportPieChartDeposits, PlayerLookupModal },
   async mounted() {
-    const faucet = await smManager.getFaucetContract(
-      authManager.getCurrentUserAddress()
-    )
+    try {
+      const currentUserAddress = store.state.main.userAddress
 
-    const buddy = await smManager.getBuddyContract(
-      authManager.getCurrentUserAddress()
-    )
-    const fountain = await smManager.getFountainContract()
+      const buddy = await smManager.getBuddyContract(currentUserAddress)
+      const fountain = await smManager.getFountainContract()
 
-    const self = this
+      const self = this
 
-    const buddyAddress = await faucet.getBuddyAddress()
-    if (
-      !buddyAddress ||
-      buddyAddress === '0x0000000000000000000000000000000000000000'
-    ) {
-      this.isBuddyRequired = true
-    } else {
-      this.isBuddyRequired = false
-
-      const userInfoTotals = await faucet.getUserInfoTotals(buddyAddress)
-      self.isBuddySpecified = true
-      self.inputBuddyAddress = buddyAddress
-      self.buddyAirdropSent = userInfoTotals.airdrops_total.toFixed(3)
-      self.buddyAirdropReceived = userInfoTotals.airdrops_received.toFixed(3)
-      self.buddyTotalDeposits = userInfoTotals.total_deposits.toFixed(3)
-    }
-
-    this.testing = async function () {
-      Moralis.Cloud.run('queryDeposits', {
-        ranges: [1, 10, 50, 100, 1000, 5000]
-      })
-        .then((result) => {
-          alert(JSON.stringify(result))
+      const updateBuddySection = async function () {
+        const userInfo = await cloud('queryFaucetGlobalUserInfo', {
+          address: currentUserAddress
         })
-        .catch((e) => {
-          alert(e.message)
-        })
-    }
+        const buddyAddress = userInfo.upline
+        if (
+          !buddyAddress ||
+          buddyAddress === '0x0000000000000000000000000000000000000000'
+        ) {
+          self.isBuddyRequired = true
+        } else {
+          self.isBuddyRequired = false
 
-    this.previewBuddy = async function () {
-      if (!self.inputBuddyAddress) {
-        alert('Buddy Address field is required')
-        return Promise.resolve()
-      }
+          const buddyUserInfo = await cloud('queryFaucetGlobalUserInfo', {
+            address: buddyAddress
+          })
 
-      return faucet
-        .getUserInfoTotals(self.inputBuddyAddress)
-        .then((userInfoTotals) => {
           self.isBuddySpecified = true
-
-          self.buddyAirdropSent = userInfoTotals.airdrops_total.toFixed(3)
-          self.buddyAirdropReceived =
-            userInfoTotals.airdrops_received.toFixed(3)
-          self.buddyTotalDeposits = userInfoTotals.total_deposits.toFixed(3)
-        })
-        .catch((e) => {
-          alert(JSON.stringify(e))
-        })
-    }
-
-    this.cancelBuddy = function () {
-      self.isBuddySpecified = false
-      self.inputBuddyAddress = ''
-      self.buddyAirdropSent = 0
-      self.buddyAirdropReceived = 0
-      self.buddyTotalDeposits = 0
-    }
-
-    this.confirmBuddy = async function () {
-      return buddy
-        .setBuddy(self.inputBuddyAddress)
-        .catch((e) => {
-          alert(JSON.stringify(e))
-        })
-        .finally(() => {})
-    }
-
-    this.hydrate = async function () {
-      self.contractCall = true
-      faucet
-        .hydrate()
-        .then(() => {
-          alert('Hydrate successful')
-        })
-        .then(updater)
-        .catch((e) => {
-          alert(JSON.stringify(e))
-        })
-        .finally(() => {
-          self.contractCall = false
-        })
-    }
-
-    this.claim = async function () {
-      self.contractCall = true
-      faucet
-        .claim()
-        .then(() => {
-          alert('Claim successful')
-        })
-        .then(updater)
-        .catch((e) => {
-          alert(JSON.stringify(e))
-        })
-        .finally(() => {
-          self.contractCall = false
-        })
-    }
-
-    const updater = async function () {
-      if (isUpdating || self.isBuddyRequired) {
-        return Promise.resolve()
+          self.inputBuddyAddress = buddyAddress
+          self.buddyAirdropSent = (
+            buddyUserInfo.airdrops_total / decimals
+          ).toFixed(3)
+          self.buddyAirdropReceived = (
+            buddyUserInfo.airdrops_received / decimals
+          ).toFixed(3)
+          self.buddyTotalDeposits = (
+            buddyUserInfo.total_deposits / decimals
+          ).toFixed(3)
+        }
       }
 
-      try {
-        isUpdating = true
+      // BEGIN: Buddy section actions
+      this.previewBuddy = async function () {
+        if (!self.inputBuddyAddress) {
+          alert('Buddy Address field is required')
+          return Promise.resolve()
+        }
 
-        const oneBilion = 1000000000
-        const nbOfDripForOneMilionBnb = await fountain.getTokenToBnbOutputPrice(
-          oneBilion
+        return cloud('queryFaucetGlobalUserInfo', {
+          address: self.inputBuddyAddress
+        })
+          .then((userInfoTotals) => {
+            self.isBuddySpecified = true
+
+            self.buddyAirdropSent = (
+              userInfoTotals.airdrops_total / decimals
+            ).toFixed(3)
+            self.buddyAirdropReceived = (
+              userInfoTotals.airdrops_received / decimals
+            ).toFixed(3)
+            self.buddyTotalDeposits = (
+              userInfoTotals.total_deposits / decimals
+            ).toFixed(3)
+          })
+          .catch((e) => {
+            alert(JSON.stringify(e))
+          })
+      }
+
+      this.cancelBuddy = function () {
+        self.isBuddySpecified = false
+        self.inputBuddyAddress = ''
+        self.buddyAirdropSent = 0
+        self.buddyAirdropReceived = 0
+        self.buddyTotalDeposits = 0
+      }
+
+      this.confirmBuddy = async function () {
+        return buddy
+          .setBuddy(self.inputBuddyAddress)
+          .catch((e) => {
+            alert(JSON.stringify(e))
+          })
+          .finally(() => {})
+      }
+      // END: Buddy section actions
+
+      // BEGIN: Hydrate/Claim actions
+      this.hydrate = async function () {
+        self.contractCall = true
+        const faucet = await smManager.getFaucetContract(
+          authManager.getCurrentUserAddress()
         )
-
-        const nbOfDripForOneMilionBnb24hAgo =
-          await fountain.getTokenToBnbOutputPrice(oneBilion, 24)
-
-        const bnbFiatValue = await dripUtils.calcBNBPrice()
-        const dripBnbRatio = oneBilion / nbOfDripForOneMilionBnb
-        const dripBnbRatio24hAgo = oneBilion / nbOfDripForOneMilionBnb24hAgo
-        const dripFiatValue = dripBnbRatio * bnbFiatValue
-
-        self.dripBnbRatio24hChange = (
-          (100 * (dripBnbRatio - dripBnbRatio24hAgo)) /
-          dripBnbRatio
-        ).toFixed(2)
-
-        self.bnbFiatValue = bnbFiatValue.toFixed(2)
-        self.dripBnbRatio = dripBnbRatio.toFixed(6)
-        self.dripFiatValue = dripFiatValue.toFixed(2)
-
-        // AVAILABLE
-        const unformattedClaimsAvailable = await faucet.getClaimsAvailable()
-        self.claimsAvailable = unformattedClaimsAvailable.toFixed(3)
-        self.claimsAvailableToBnb = (
-          unformattedClaimsAvailable * dripBnbRatio
-        ).toFixed(3)
-        self.claimsAvailableToFiat = (
-          dripFiatValue * unformattedClaimsAvailable
-        ).toFixed(3)
-
-        // DEPOSITS
-        const unformattedDeposits = await faucet.getDepositBalance()
-        self.deposits = unformattedDeposits.toFixed(3)
-        self.depositsToBnb = (unformattedDeposits * dripBnbRatio).toFixed(3)
-        self.depositsToFiat = (unformattedDeposits * dripFiatValue).toFixed(3)
-
-        // CLAIMED & MAX PAYOUT
-        const unformattedClaimed = await faucet.getClaimedAmount()
-        const unformattedMaxPayout = await faucet.getMaxPayout()
-
-        self.claimed = unformattedClaimed.toFixed(3)
-        const claimedProgress = (
-          (unformattedClaimed / unformattedMaxPayout) *
-          100
-        ).toFixed(0)
-
-        self.claimedProgressStyle = computed(() => {
-          return widthStyle.replace('[pct]', claimedProgress)
-        })
-
-        self.maxPayout = unformattedMaxPayout.toFixed(3)
-        const maxPayoutProgress = (
-          (unformattedMaxPayout / 100000) *
-          100
-        ).toFixed(0)
-        self.maxPayoutProgressStyle = computed(() => {
-          return widthStyle.replace('[pct]', maxPayoutProgress)
-        })
-      } finally {
-        isUpdating = false
+        faucet
+          .hydrate()
+          .then(() => {
+            alert('Hydrate successful')
+          })
+          .then(this.updater)
+          .catch((e) => {
+            alert(JSON.stringify(e))
+          })
+          .finally(() => {
+            self.contractCall = false
+          })
       }
+
+      this.claim = async function () {
+        self.contractCall = true
+        const faucet = await smManager.getFaucetContract(
+          authManager.getCurrentUserAddress()
+        )
+        faucet
+          .claim()
+          .then(() => {
+            alert('Claim successful')
+          })
+          .then(this.updater)
+          .catch((e) => {
+            alert(JSON.stringify(e))
+          })
+          .finally(() => {
+            self.contractCall = false
+          })
+      }
+      // END: Hydrate/Claim actions
+
+      this.updater = async function () {
+        if (isUpdating) {
+          return Promise.resolve()
+        }
+
+        try {
+          const userInfo = await cloud('queryFaucetGlobalUserInfo', {
+            address: currentUserAddress
+          })
+
+          isUpdating = true
+
+          const one = 1 * 10 ** 18
+          const nbOfDripForOneBnb =
+            await fountain.getTokenToBnbOutputPrice(one.toString())
+
+          const nbOfDripForOneBnb24hAgo =
+            await fountain.getTokenToBnbOutputPrice(one.toString(), 24)
+
+          const bnbFiatValue = await dripUtils.calcBNBPrice()
+          const dripBnbRatio = one / nbOfDripForOneBnb
+          const dripBnbRatio24hAgo = one / nbOfDripForOneBnb24hAgo
+          const dripFiatValue = dripBnbRatio * bnbFiatValue
+
+          self.dripBnbRatio24hChange = (
+            (100 * (dripBnbRatio - dripBnbRatio24hAgo)) /
+            dripBnbRatio
+          ).toFixed(2)
+
+          self.bnbFiatValue = bnbFiatValue.toFixed(2)
+          self.dripBnbRatio = dripBnbRatio.toFixed(6)
+          self.dripFiatValue = dripFiatValue.toFixed(2)
+
+          // AVAILABLE
+          const unformattedClaimsAvailable = userInfo.claim_available / decimals
+          self.claimsAvailable = unformattedClaimsAvailable.toFixed(3)
+          self.claimsAvailableToBnb = (
+            unformattedClaimsAvailable * dripBnbRatio
+          ).toFixed(3)
+          self.claimsAvailableToFiat = (
+            dripFiatValue * unformattedClaimsAvailable
+          ).toFixed(3)
+
+          // DEPOSITS
+          const unformattedDeposits = userInfo.total_deposits / decimals
+          self.deposits = unformattedDeposits.toFixed(3)
+          self.depositsToBnb = (unformattedDeposits * dripBnbRatio).toFixed(3)
+          self.depositsToFiat = (unformattedDeposits * dripFiatValue).toFixed(3)
+
+          // CLAIMED & MAX PAYOUT
+          const unformattedClaimed = userInfo.total_payouts / decimals
+          const unformattedMaxPayout =
+            userInfo.max_payouts.max_payout / decimals
+
+          self.claimed = unformattedClaimed.toFixed(3)
+          const claimedProgress = (
+            (unformattedClaimed / unformattedMaxPayout) *
+            100
+          ).toFixed(0)
+
+          self.claimedProgressStyle = computed(() => {
+            return widthStyle.replace('[pct]', claimedProgress)
+          })
+
+          self.maxPayout = unformattedMaxPayout.toFixed(3)
+          const maxPayoutProgress = (
+            (unformattedMaxPayout / 100000) *
+            100
+          ).toFixed(0)
+          self.maxPayoutProgressStyle = computed(() => {
+            return widthStyle.replace('[pct]', maxPayoutProgress)
+          })
+        } finally {
+          isUpdating = false
+        }
+      }
+
+      // Trigger first update
+      this.updater()
+      updateBuddySection()
+
+      // Then call every 10 seconds
+      this.$nextTick(() => {
+        this.updaterInterval = setInterval(async () => {
+          this.updater()
+        }, 10000)
+      })
+    } catch (err) {
+      setTimeout(this.updater, 2000)
     }
-
-    // Trigger first update
-    await updater()
-
-    // Then call every 10 seconds
-    this.$nextTick(() => {
-      this.updater = setInterval(async () => {
-        updater()
-      }, 10000)
-    })
   },
   unmounted() {
     // When leaving the current menu, stop calling the updater
-    clearInterval(this.updater)
+    clearInterval(this.updaterInterval)
   },
   setup() {
     const claimsAvailable = ref('0')
