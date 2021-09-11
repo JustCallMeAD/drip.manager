@@ -9,7 +9,7 @@ import store from './store'
 export default defineComponent({
   async beforeCreate() {
     store.commit('main/' + types.INIT)
-
+    alert(process.env.THIS_IS_A_TEST)
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
         if (accounts) {
