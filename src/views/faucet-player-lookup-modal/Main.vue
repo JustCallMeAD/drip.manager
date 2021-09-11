@@ -132,8 +132,6 @@ export default defineComponent({
 
       let lastAirdropDays = 'Never'
       if (userInfo.last_airdrop) {
-        alert((new Date().getTime() / 1000 - userInfo.last_airdrop) /
-              (60 * 60 * 24))
         lastAirdropDays =
           Math.floor(
             (new Date().getTime() / 1000 - userInfo.last_airdrop) /

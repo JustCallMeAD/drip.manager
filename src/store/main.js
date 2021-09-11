@@ -31,11 +31,6 @@ const actions = {
 // mutations
 const mutations = {
   [types.INIT](state) {
-    const userAddress = localStorage.getItem('userAddress')
-    if (userAddress) {
-      state.userAddress = userAddress
-    }
-
     const darkMode = localStorage.getItem('darkMode')
     if (darkMode) {
       state.darkMode = darkMode === 'true'
@@ -50,7 +45,6 @@ const mutations = {
   },
   [types.SET_USER_ADDRESS](state, { userAddress }) {
     state.userAddress = userAddress
-    localStorage.setItem('userAddress', userAddress)
   }
 }
 

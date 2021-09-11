@@ -278,6 +278,9 @@
       </div>
       <!-- END: Input -->
     </div>
+    <!-- <div class="intro-y col-span-12 lg:col-span-6 mt-6">
+      <DripTradingView />
+    </div> -->
   </div>
 </template>
 
@@ -286,9 +289,10 @@ import { defineComponent, ref } from 'vue'
 import smManager from '@/smartcontracts/smartcontracts-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import store from '@/store'
+// import DripTradingView from '@/views/fountain-tradeview/Main.vue'
 
 export default defineComponent({
-  components: {},
+  components: { },
   methods: {
     setFromMax: function (event) {
       if (this.isFromBnb) {

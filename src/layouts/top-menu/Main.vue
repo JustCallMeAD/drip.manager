@@ -34,177 +34,17 @@
         <div class="-intro-x breadcrumb breadcrumb--light mr-auto"></div>
         <!-- END: Breadcrumb -->
         <!-- BEGIN: Notifications -->
-        <div class="intro-x dropdown mr-4 sm:mr-6">
-          <!-- <div
-            class="
-              dropdown-toggle
-              notification notification--light notification--bullet
-              cursor-pointer
-            "
-            role="button"
-            aria-expanded="false"
-          >
-            <BellIcon class="notification__icon dark:text-gray-300" />
-          </div> -->
-          <!-- <div class="notification-content pt-2 dropdown-menu">
-            <div
-              class="
-                notification-content__box
-                dropdown-menu__content
-                box
-                dark:bg-dark-6
-              "
-            >
-              <div class="notification-content__title">Notifications</div>
-              <div
-                v-for="(faker, fakerKey) in $_.take($f(), 5)"
-                :key="fakerKey"
-                class="cursor-pointer relative flex items-center"
-                :class="{ 'mt-5': fakerKey }"
-              >
-                <div class="w-12 h-12 flex-none image-fit mr-1">
-                  <img
-                    alt="Drip Manager"
-                    class="rounded-full"
-                    :src="require(`@/assets/images/${faker.photos[0]}`)"
-                  />
-                  <div
-                    class="
-                      w-3
-                      h-3
-                      bg-theme-9
-                      absolute
-                      right-0
-                      bottom-0
-                      rounded-full
-                      border-2 border-white
-                    "
-                  ></div>
-                </div>
-                <div class="ml-2 overflow-hidden">
-                  <div class="flex items-center">
-                    <a href="javascript:;" class="font-medium truncate mr-5">
-                      {{ faker.users[0].name }}
-                    </a>
-                    <div
-                      class="text-xs text-gray-500 ml-auto whitespace-nowrap"
-                    >
-                      {{ faker.times[0] }}
-                    </div>
-                  </div>
-                  <div class="w-full truncate text-gray-600 mt-0.5">
-                    {{ faker.news[0].shortContent }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-        </div>
+
         <!-- END: Notifications -->
         <!-- BEGIN: Account Menu -->
-        <div class="intro-x dropdown w-8 h-8">
-          <div
-            class="
-              dropdown-toggle
-              w-8
-              h-8
-              rounded-full
-              overflow-hidden
-              shadow-lg
-              image-fit
-              zoom-in
-              scale-110
-            "
-            role="button"
-            aria-expanded="false"
+        <div class="intro-x">
+          <button
+            :disabled="isConnected"
+            @click="connect"
+            class="btn btn-secondary"
           >
-            <img
-              alt="Drip Manager"
-              :src="require(`@/assets/images/${$f()[9].photos[0]}`)"
-            />
-          </div>
-          <div class="dropdown-menu w-56">
-            <div
-              class="
-                dropdown-menu__content
-                box
-                bg-theme-26
-                dark:bg-dark-6
-                text-white
-              "
-            >
-              <div class="p-4 border-b border-theme-27 dark:border-dark-3">
-                <div class="font-medium">
-                  {{ getFormattedUser() }}
-                </div>
-              </div>
-              <!-- <div class="p-2">
-                <a
-                  href=""
-                  class="
-                    flex
-                    items-center
-                    block
-                    p-2
-                    transition
-                    duration-300
-                    ease-in-out
-                    hover:bg-theme-1
-                    dark:hover:bg-dark-3
-                    rounded-md
-                  "
-                >
-                  <UserIcon class="w-4 h-4 mr-2" /> Profile
-                </a>
-              </div> -->
-              <div
-                v-if="getFormattedUser() !== 'Guest'"
-                class="p-2 border-t border-theme-27 dark:border-dark-3"
-              >
-                <a
-                  href=""
-                  @click="logout"
-                  class="
-                    flex
-                    items-center
-                    block
-                    p-2
-                    transition
-                    duration-300
-                    ease-in-out
-                    hover:bg-theme-1
-                    dark:hover:bg-dark-3
-                    rounded-md
-                  "
-                >
-                  <ToggleRightIcon class="w-4 h-4 mr-2" />
-                  Logout
-                </a>
-              </div>
-              <div
-                v-else
-                class="p-2 border-t border-theme-27 dark:border-dark-3"
-              >
-                <router-link
-                  :to="{ name: 'login' }"
-                  tag="a"
-                  class="
-                    flex
-                    items-center
-                    block
-                    p-2
-                    transition
-                    duration-300
-                    ease-in-out
-                    hover:bg-theme-1
-                    dark:hover:bg-dark-3
-                    rounded-md
-                  "
-                  >Login</router-link
-                >
-              </div>
-            </div>
-          </div>
+            {{ userAddress }}
+          </button>
         </div>
         <!-- END: Account Menu -->
       </div>
@@ -310,6 +150,14 @@ import DarkModeSwitcher from '@/components/dark-mode-switcher/Main.vue'
 import { nestedMenu, linkTo } from '@/layouts/side-menu'
 import authManager from '@/auth/auth-manager'
 
+const formatAddress = (address) => {
+  if (address) {
+    return (
+      address.substring(0, 5) + '...' + address.substring(address.length - 6)
+    )
+  }
+}
+
 export default defineComponent({
   components: {
     TopBar,
@@ -329,14 +177,17 @@ export default defineComponent({
         })
     }
   },
+  mounted() {},
   setup() {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
     const formattedMenu = ref([])
+    const userAddress = ref('')
     const topMenu = computed(() => {
       return nestedMenu(store.state.topMenu.menu, route)
     })
+    const isConnected = ref(false)
 
     watch(
       computed(() => route.path),
@@ -345,36 +196,58 @@ export default defineComponent({
       }
     )
 
+    const updateAddress = () => {
+      if (store.state.main.userAddress) {
+        userAddress.value = formatAddress(store.state.main.userAddress)
+        isConnected.value = true
+      } else {
+        userAddress.value = 'Connect'
+        isConnected.value = false
+      }
+    }
+
+    watch(
+      computed(() => store.state.main.userAddress),
+      () => {
+        updateAddress()
+      }
+    )
+
     onMounted(() => {
       cash('body')
         .removeClass('error-page')
         .removeClass('login')
         .addClass('main')
-      const isGuest = authManager.isGuest()
-      const menu = $h.toRaw(topMenu.value).filter(item => (isGuest && item.access === 'guest') || !isGuest)
+      const menu = $h.toRaw(topMenu.value)
       formattedMenu.value = menu
+
+      updateAddress()
     })
 
-    const getFormattedUser = function () {
-      if (authManager.isGuest()) {
-        return 'Guest'
-      } else {
-        const userAddress = authManager.getCurrentUserAddress()
-
-        return (
-          userAddress.substring(0, 5) +
-          '...' +
-          userAddress.substring(userAddress.length - 6)
-        )
+    const connect = async function () {
+      if (window.ethereum) {
+        try {
+          if (!store.state.main.userAddress) {
+            const accounts = await window.ethereum.request({
+              method: 'eth_requestAccounts'
+            })
+            if (accounts) {
+              store.dispatch('main/setUserAddress', accounts[0])
+            }
+          }
+        } catch (e) {
+          console.log(e.message)
+        }
       }
     }
 
     return {
+      connect,
+      isConnected,
+      userAddress,
       formattedMenu,
       router,
-      linkTo,
-      isGuest: authManager.isGuest(),
-      getFormattedUser
+      linkTo
     }
   }
 })

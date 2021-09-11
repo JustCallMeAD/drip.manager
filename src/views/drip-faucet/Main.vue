@@ -439,17 +439,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import smManager from '@/smartcontracts/smartcontracts-manager'
-import authManager from '@/auth/auth-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import Message from 'primevue/message'
 import ReportPieChartDeposits from '@/components/report-pie-chart-deposits/Main.vue'
 import PlayerLookupModal from '@/views/faucet-player-lookup-modal/Main.vue'
 import store from '@/store'
 const decimals = 10 ** 18
-
-const cloud = authManager.getCloudRunner()
 
 const widthStyle = 'width: [pct]%'
 
@@ -459,17 +456,18 @@ export default defineComponent({
   components: { Message, ReportPieChartDeposits, PlayerLookupModal },
   async mounted() {
     try {
-      const currentUserAddress = store.state.main.userAddress
-
-      const buddy = await smManager.getBuddyContract(currentUserAddress)
       const fountain = await smManager.getFountainContract()
 
       const self = this
 
-      const updateBuddySection = async function () {
-        const userInfo = await cloud('queryFaucetGlobalUserInfo', {
-          address: currentUserAddress
-        })
+      this.updateBuddySection = async function () {
+        if (!store.state.main.userAddress) {
+          return Promise.resolve()
+        }
+        const faucet = await smManager.getFaucetContract()
+        const userInfo = await faucet.queryFaucetGlobalUserInfo(
+          store.state.main.userAddress
+        )
         const buddyAddress = userInfo.upline
         if (
           !buddyAddress ||
@@ -479,21 +477,15 @@ export default defineComponent({
         } else {
           self.isBuddyRequired = false
 
-          const buddyUserInfo = await cloud('queryFaucetGlobalUserInfo', {
-            address: buddyAddress
-          })
+          const buddyUserInfo = await faucet.queryFaucetGlobalUserInfo(
+            buddyAddress
+          )
 
           self.isBuddySpecified = true
           self.inputBuddyAddress = buddyAddress
-          self.buddyAirdropSent = (
-            buddyUserInfo.airdrops_total / decimals
-          ).toFixed(3)
-          self.buddyAirdropReceived = (
-            buddyUserInfo.airdrops_received / decimals
-          ).toFixed(3)
-          self.buddyTotalDeposits = (
-            buddyUserInfo.total_deposits / decimals
-          ).toFixed(3)
+          self.buddyAirdropSent = buddyUserInfo.airdrops_total.toFixed(3)
+          self.buddyAirdropReceived = buddyUserInfo.airdrops_received.toFixed(3)
+          self.buddyTotalDeposits = buddyUserInfo.total_deposits.toFixed(3)
         }
       }
 
@@ -504,9 +496,9 @@ export default defineComponent({
           return Promise.resolve()
         }
 
-        return cloud('queryFaucetGlobalUserInfo', {
-          address: self.inputBuddyAddress
-        })
+        const faucet = await smManager.getFaucetContract()
+        faucet
+          .queryFaucetGlobalUserInfo(store.state.main.userAddress)
           .then((userInfoTotals) => {
             self.isBuddySpecified = true
 
@@ -534,6 +526,8 @@ export default defineComponent({
       }
 
       this.confirmBuddy = async function () {
+        const currentUserAddress = store.state.main.userAddress
+        const buddy = await smManager.getBuddyContract(currentUserAddress)
         return buddy
           .setBuddy(self.inputBuddyAddress)
           .catch((e) => {
@@ -546,11 +540,10 @@ export default defineComponent({
       // BEGIN: Hydrate/Claim actions
       this.hydrate = async function () {
         self.contractCall = true
-        const faucet = await smManager.getFaucetContract(
-          authManager.getCurrentUserAddress()
-        )
+        const currentUserAddress = store.state.main.userAddress
+        const faucet = await smManager.getFaucetContract()
         faucet
-          .hydrate()
+          .hydrate(currentUserAddress)
           .then(() => {
             alert('Hydrate successful')
           })
@@ -565,11 +558,10 @@ export default defineComponent({
 
       this.claim = async function () {
         self.contractCall = true
-        const faucet = await smManager.getFaucetContract(
-          authManager.getCurrentUserAddress()
-        )
+        const currentUserAddress = store.state.main.userAddress
+        const faucet = await smManager.getFaucetContract()
         faucet
-          .claim()
+          .claim(currentUserAddress)
           .then(() => {
             alert('Claim successful')
           })
@@ -584,20 +576,20 @@ export default defineComponent({
       // END: Hydrate/Claim actions
 
       this.updater = async function () {
-        if (isUpdating) {
+        if (isUpdating || !store.state.main.userAddress) {
           return Promise.resolve()
         }
 
         try {
-          const userInfo = await cloud('queryFaucetGlobalUserInfo', {
-            address: currentUserAddress
-          })
-
+          const faucet = await smManager.getFaucetContract()
+          const userAddress = store.state.main.userAddress
+          const userInfo = await faucet.queryFaucetGlobalUserInfo(userAddress)
           isUpdating = true
 
           const one = 1 * 10 ** 18
-          const nbOfDripForOneBnb =
-            await fountain.getTokenToBnbOutputPrice(one.toString())
+          const nbOfDripForOneBnb = await fountain.getTokenToBnbOutputPrice(
+            one.toString()
+          )
 
           const nbOfDripForOneBnb24hAgo =
             await fountain.getTokenToBnbOutputPrice(one.toString(), 24)
@@ -627,13 +619,13 @@ export default defineComponent({
           ).toFixed(3)
 
           // DEPOSITS
-          const unformattedDeposits = userInfo.total_deposits / decimals
+          const unformattedDeposits = userInfo.total_deposits
           self.deposits = unformattedDeposits.toFixed(3)
           self.depositsToBnb = (unformattedDeposits * dripBnbRatio).toFixed(3)
           self.depositsToFiat = (unformattedDeposits * dripFiatValue).toFixed(3)
 
           // CLAIMED & MAX PAYOUT
-          const unformattedClaimed = userInfo.total_payouts / decimals
+          const unformattedClaimed = userInfo.total_payouts
           const unformattedMaxPayout =
             userInfo.max_payouts.max_payout / decimals
 
@@ -660,9 +652,17 @@ export default defineComponent({
         }
       }
 
+      watch(
+        computed(() => store.state.main.userAddress),
+        () => {
+          self.updater()
+          self.updateBuddySection()
+        }
+      )
+
       // Trigger first update
       this.updater()
-      updateBuddySection()
+      this.updateBuddySection()
 
       // Then call every 10 seconds
       this.$nextTick(() => {

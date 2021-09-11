@@ -13,7 +13,7 @@ export default {
     const bnbToSell = web3.utils.toWei('1', 'ether')
     let amountOut
     try {
-      const router = await new web3.eth.Contract(
+      const router = new web3.eth.Contract(
         pancakeSwapAbi,
         pancakeSwapContract
       )

@@ -164,6 +164,7 @@ export default defineComponent({
 
     return {
       data,
+      chartDataTotalHolder,
       chartData,
       chartLegend,
       options

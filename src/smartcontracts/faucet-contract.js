@@ -8,17 +8,15 @@ class FaucetContract {
     this.userAddress = userAddress
   }
 
-  async getClaimsAvailable(precision) {
-    return round(
-      (await this.contract.methods.claimsAvailable(this.userAddress).call()) /
-        decimals,
-      precision
+  async getClaimsAvailable(address) {
+    return (
+      (await this.contract.methods.claimsAvailable(address).call()) / decimals
     )
   }
 
   async getUserInfoTotals(address) {
     const userInfoTotals = await this.contract.methods
-      .userInfoTotals(!address ? this.userAddress : address)
+      .userInfoTotals(address)
       .call()
     return {
       referrals: userInfoTotals.referrals,
@@ -31,26 +29,23 @@ class FaucetContract {
   }
 
   async getUserInfo(address) {
-    return await this.contract.methods
-      .userInfo(!address ? this.userAddress : address)
-      .call()
+    return await this.contract.methods.userInfo(address).call()
   }
 
-  async getDepositBalance(precision) {
-    const userInfoTotals = await this.getUserInfoTotals()
-    return round(userInfoTotals.total_deposits, precision)
+  async getDepositBalance(address) {
+    const userInfoTotals = await this.getUserInfoTotals(address)
+    return userInfoTotals.total_deposits
   }
 
-  async getClaimedAmount(precision) {
-    const userInfoTotals = await this.getUserInfoTotals()
-    return round(userInfoTotals.total_payouts, precision)
+  async getClaimedAmount(address) {
+    const userInfoTotals = await this.getUserInfoTotals(address)
+    return userInfoTotals.total_payouts
   }
 
-  async getMaxPayout(precision) {
-    return round(
-      (await this.contract.methods.payoutOf(this.userAddress).call())
-        .max_payout / decimals,
-      precision
+  async getMaxPayout(address) {
+    return (
+      (await this.contract.methods.payoutOf(address).call())
+        .max_payout / decimals
     )
   }
 
@@ -59,29 +54,32 @@ class FaucetContract {
     return userInfo.upline
   }
 
-  // Write to blockchain
-  hydrate() {
-    return this.contract.methods.roll().send({ from: this.userAddress })
+  async queryFaucetGlobalUserInfo(address) {
+    const userInfoTotals = await this.getUserInfoTotals(address)
+    const userInfo = await this.getUserInfo(address)
+    const users = await this.contract.methods.users(address).call()
+    const maxPayouts = await this.contract.methods.payoutOf(address).call()
+    const claimsAvailable = await this.contract.methods
+      .claimsAvailable(address)
+      .call()
+    return {
+      ...userInfoTotals,
+      ...userInfo,
+      max_payouts: maxPayouts,
+      claim_available: claimsAvailable,
+      ...users
+    }
   }
 
   // Write to blockchain
-  claim() {
-    return this.contract.methods.claim().send({ from: this.userAddress })
-  }
-}
-
-function round(value, roundDecimal) {
-  if (!value) {
-    return 0
-  }
-  if (typeof value == 'string') {
-    value = parseFloat(value)
-  }
-  if (roundDecimal) {
-    value = value.toFixed(roundDecimal)
+  hydrate(address) {
+    return this.contract.methods.roll().send({ from: address })
   }
 
-  return value
+  // Write to blockchain
+  claim(address) {
+    return this.contract.methods.claim().send({ from: address })
+  }
 }
 
 export default FaucetContract
