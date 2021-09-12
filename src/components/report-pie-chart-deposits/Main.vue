@@ -65,7 +65,9 @@
             xl:hidden
           "
         ></div>
-        <span class="font-medium xl:ml-auto font-bold border-t-2">{{ chartDataTotalHolder }}</span>
+        <span class="font-medium xl:ml-auto font-bold border-t-2">{{
+          chartDataTotalHolder
+        }}</span>
       </div>
     </div>
   </div>
@@ -74,9 +76,7 @@
 <script>
 import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store'
-import authManager from '@/auth/auth-manager'
-
-const cloudRunner = authManager.getCloudRunner()
+import getDepositsCounts from '@/http/getDepositCounts.js'
 
 export default defineComponent({
   props: {
@@ -90,12 +90,14 @@ export default defineComponent({
     }
   },
   async mounted() {
-    const stats = await cloudRunner('queryDeposits', {
-      ranges: [1, 10, 50, 100, 500, 1000, 2000, 5000]
-    })
+    try {
+      const stats = await getDepositsCounts([
+        1, 10, 50, 100, 500, 1000, 2000, 5000
+      ])
 
-    this.chartData = stats.results
-    this.chartDataTotalHolder = stats.totalDistinctRange
+      this.chartData = stats.data.results
+      this.chartDataTotalHolder = stats.data.sum
+    } catch (e) {}
   },
   setup() {
     const store = useStore()

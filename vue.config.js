@@ -13,7 +13,7 @@ module.exports = {
     ]
   },
   transpileDependencies: [/ckeditor5-[^/\\]+[/\\]src[/\\].+\.js$/],
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     const svgRule = config.module.rule('svg')
     svgRule.exclude.add(path.join(__dirname, 'node_modules', '@ckeditor'))
     config.module
