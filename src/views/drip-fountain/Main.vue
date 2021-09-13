@@ -406,9 +406,11 @@ export default defineComponent({
     this.triggerDepositAll = async function () {
       try {
         self.isWaitingForContractWrite = true
+        const drip = await smManager.getDripContract()
+        const dripBalance = await drip.getDripBalanceOf(currentUserAddress)
         await faucet.deposit(
           currentUserAddress,
-          (self.dripBalance * 10 ** 18).toString()
+          (dripBalance).toString()
         )
         self.isWaitingForContractWrite = false
         self.isApproveRequired = false

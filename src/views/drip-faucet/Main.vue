@@ -207,19 +207,14 @@
             <div class="col-span-12 xl:col-span-4 mt-2 intro-y">
               <div class="intro-y box p-2">
                 <div class="flex flex-col items-center">
-                  <div
-                    class="
-                      text-theme-19
-                      dark:text-gray-300
-                      text-lg
-                      xl:text-xl
-                      font-medium
-                    "
-                  >
+                  <div class="dark:text-gray-300">Wallet balance</div>
+                  <div class="text-theme-19 dark:text-gray-300 font-medium">
                     {{ dripBalance.toFixed(6) }} DRIP
                   </div>
                   <div class="flex flex-nowrap">
                     <button
+                      @click="depositAll"
+                      :disabled="dripBalance == 0"
                       class="btn btn-secondary whitespace-nowrap"
                       style="
                         border-top-right-radius: 0;
@@ -229,6 +224,8 @@
                       Deposit ALL
                     </button>
                     <button
+                      :disabled="dripBalance == 0"
+                      @click="$refs.faucetDepositDropDown.show2()"
                       class="btn btn-secondary whitespace-nowrap"
                       style="
                         border-top-left-radius: 0;
@@ -237,6 +234,7 @@
                     >
                       Deposit...
                     </button>
+                    <FaucetDepositDropDown ref="faucetDepositDropDown" />
                   </div>
                 </div>
               </div>
@@ -569,6 +567,7 @@ import dripUtils from '@/smartcontracts/drip-utils'
 import Message from 'primevue/message'
 import ReportPieChartDeposits from '@/components/report-pie-chart-deposits/Main.vue'
 import PlayerLookupModal from '@/views/faucet-player-lookup-modal/Main.vue'
+import FaucetDepositDropDown from '@/views/faucet-deposit/Main.vue'
 import store from '@/store'
 const decimals = 10 ** 18
 
@@ -577,7 +576,12 @@ const widthStyle = 'width: [pct]%'
 let isUpdating = false
 
 export default defineComponent({
-  components: { Message, ReportPieChartDeposits, PlayerLookupModal },
+  components: {
+    Message,
+    ReportPieChartDeposits,
+    PlayerLookupModal,
+    FaucetDepositDropDown
+  },
   async mounted() {
     try {
       const fountain = await smManager.getFountainContract()
@@ -661,7 +665,7 @@ export default defineComponent({
       }
       // END: Buddy section actions
 
-      // BEGIN: Hydrate/Claim actions
+      // BEGIN: Hydrate/Claim/Deposit All actions
       this.hydrate = async function () {
         self.contractCall = true
         const currentUserAddress = store.state.main.userAddress
@@ -697,7 +701,26 @@ export default defineComponent({
             self.contractCall = false
           })
       }
-      // END: Hydrate/Claim actions
+      this.depositAll = async function () {
+        self.contractCall = true
+        const currentUserAddress = store.state.main.userAddress
+        const drip = await smManager.getDripContract()
+        const dripBalance = await drip.getDripBalanceOf(currentUserAddress)
+        const faucet = await smManager.getFaucetContract()
+        faucet
+          .deposit(currentUserAddress, dripBalance.toString())
+          .then(() => {
+            alert('Deposit successful')
+          })
+          .then(this.updater)
+          .catch((e) => {
+            alert(JSON.stringify(e))
+          })
+          .finally(() => {
+            self.contractCall = false
+          })
+      }
+      // END: Hydrate/Claim/Deposit All actions
 
       this.updater = async function () {
         if (isUpdating || !store.state.main.userAddress) {
@@ -796,6 +819,11 @@ export default defineComponent({
           self.updater()
           self.updateBuddySection()
         }
+      )
+
+      this.$watch(
+        '$refs.faucetDepositDropDown.contractCall',
+        (newValue, oldValue) => (this.contractCall = newValue)
       )
 
       // Trigger first update
