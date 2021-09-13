@@ -211,7 +211,7 @@
             <div class="col-span-12 xl:col-span-8 intro-y">
               <div class="intro-y box p-5">
                 <div class="flex flex-col xl:flex-row xl:items-center">
-                  <div class="flex">
+                  <div class="flex mx-auto">
                     <div>
                       <div
                         class="
