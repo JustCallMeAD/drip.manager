@@ -118,7 +118,7 @@
 
         <div class="col-span-12 xl:col-span-6 mt-2 intro-y">
           <div class="grid grid-cols-12 gap-6">
-            <div class="col-span-12 mt-2 intro-y">
+            <div class="col-span-12 xl:col-span-8 mt-2 intro-y">
               <div class="intro-y box p-2">
                 <div class="flex flex-col xl:flex-row xl:items-center">
                   <div class="flex mx-auto">
@@ -135,7 +135,7 @@
                         {{ airdropReceived }} / {{ airdropSent }}
                       </div>
                       <div class="mt-0.5 text-gray-600 dark:text-gray-600">
-                        Airdrop Received/Sent
+                        Airdrop Received / Sent
                       </div>
                     </div>
                     <div
@@ -170,7 +170,7 @@
                           items-center
                         "
                       >
-                        <div>Rewarded direct/indirect</div>
+                        <div>Rewarded direct / indirect</div>
                       </div>
                     </div>
                     <div
@@ -194,17 +194,53 @@
                           font-medium
                         "
                       >
-                        {{ teamDirect }} / {{teamTotal}}
+                        {{ teamDirect }} / {{ teamTotal }}
                       </div>
                       <div class="mt-0.5 text-gray-600 dark:text-gray-600">
-                        Team direct/indirect
+                        Team direct / indirect
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
+            <div class="col-span-12 xl:col-span-4 mt-2 intro-y">
+              <div class="intro-y box p-2">
+                <div class="flex flex-col items-center">
+                  <div
+                    class="
+                      text-theme-19
+                      dark:text-gray-300
+                      text-lg
+                      xl:text-xl
+                      font-medium
+                    "
+                  >
+                    {{ dripBalance.toFixed(6) }} DRIP
+                  </div>
+                  <div class="flex flex-nowrap">
+                    <button
+                      class="btn btn-secondary whitespace-nowrap"
+                      style="
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 0;
+                      "
+                    >
+                      Deposit ALL
+                    </button>
+                    <button
+                      class="btn btn-secondary whitespace-nowrap"
+                      style="
+                        border-top-left-radius: 0;
+                        border-bottom-left-radius: 0;
+                      "
+                    >
+                      Deposit...
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <!-- <div class="col-span-12 intro-y">
               <h2 class="text-lg font-medium truncate mr-5">Price stats</h2>
             </div> -->
@@ -333,21 +369,23 @@
             </div>
             <!-- ACTION BUTTON -->
             <div class="col-span-12 xl:col-span-4 intro-y">
-              <button
-                :disabled="contractCall || isBuddyRequired"
-                @click="hydrate"
-                class="btn btn-primary w-32 mr-2 mb-2"
-              >
-                <RefreshCwIcon class="w-4 h-4 mr-2" /> Hydrate
-              </button>
-              <button
-                :disabled="contractCall || isBuddyRequired"
-                @click="claim"
-                class="btn btn-primary w-32 mr-2 mb-2"
-              >
-                <DollarSignIcon class="w-4 h-4 mr-2" /> Claim
-              </button>
-              <PlayerLookupModal />
+              <div class="flex flex-wrap">
+                <button
+                  :disabled="contractCall || isBuddyRequired"
+                  @click="hydrate"
+                  class="btn btn-primary w-32 mr-2 mb-2"
+                >
+                  <RefreshCwIcon class="w-4 h-4 mr-2" /> Hydrate
+                </button>
+                <button
+                  :disabled="contractCall || isBuddyRequired"
+                  @click="claim"
+                  class="btn btn-primary w-32 mr-2 mb-2"
+                >
+                  <DollarSignIcon class="w-4 h-4 mr-2" /> Claim
+                </button>
+                <PlayerLookupModal />
+              </div>
             </div>
             <!-- END: ACTION BUTTON-->
             <!-- BEGIN: BUDDY INPUT -->
@@ -668,6 +706,7 @@ export default defineComponent({
 
         try {
           const faucet = await smManager.getFaucetContract()
+          const drip = await smManager.getDripContract()
           const userAddress = store.state.main.userAddress
           const userInfo = await faucet.queryFaucetGlobalUserInfo(userAddress)
           isUpdating = true
@@ -742,6 +781,10 @@ export default defineComponent({
 
           self.teamDirect = userInfo.referrals
           self.teamTotal = userInfo.total_structure
+
+          // Drip Balance
+          self.dripBalance =
+            (await drip.getDripBalanceOf(userAddress)) / 10 ** 18
         } finally {
           isUpdating = false
         }
@@ -816,7 +859,10 @@ export default defineComponent({
 
     const teamDirect = ref(0)
     const teamTotal = ref(0)
+
+    const dripBalance = ref(0)
     return {
+      dripBalance,
       teamDirect,
       teamTotal,
       rewardDirect,
