@@ -1,8 +1,8 @@
 <template>
-  <div class="grid grid-cols-12 gap-12">
-    <div class="intro-y col-span-12 lg:col-span-6 mt-6">
+  <div class="grid grid-cols-2 gap-2 sm:gap-12">
+    <div class="intro-y col-span-2 lg:col-span-1 mt-6">
       <!-- BEGIN: Input -->
-      <div class="intro-y box mx-auto" style="width: 350px">
+      <div class="intro-y box sm:mx-auto sm:w-[500px] mb-8">
         <div
           class="
             flex flex-col
@@ -13,7 +13,7 @@
             dark:border-dark-6
           "
         >
-          <div class="flex flex-col items-center">
+          <div class="flex flex-col items-center mx-auto">
             <div class="flex">
               <div>
                 <div
@@ -103,6 +103,7 @@
             p-5
             border-b-2 border-gray-200
             dark:border-dark-6
+            bg-green-200
           "
         >
           <h1 class="font-medium text-base mr-auto">Exchange</h1>
@@ -179,7 +180,7 @@
           <div class="flex flex-row ml-3 mt-1 mr-5">
             <div class="mr-auto font-medium">≈ {{ fromCoinFiatValue }} $</div>
             <div class="flex-shrink-0">
-              {{ fromBalance }} {{ ' ' + fromCoin }}
+              {{ fromBalance.toFixed(6) }} {{ ' ' + fromCoin }}
             </div>
           </div>
           <div class="flex flex-row items-center ml-3 mr-3 mt-1">
@@ -223,7 +224,7 @@
         <div class="border-2 rounded-lg p-2 ml-1 mr-1">
           <div class="flex flex-row mt-1 ml-3 mt-1 mr-5">
             <div class="mr-auto font-medium">≈ {{ toCoinFiatValue }} $</div>
-            <div class="flex-shrink-0">{{ toBalance }} {{ ' ' + toCoin }}</div>
+            <div class="flex-shrink-0">{{ toBalance.toFixed(6) }} {{ ' ' + toCoin }}</div>
           </div>
           <div class="flex flex-row items-center ml-3 mr-3 mt-1">
             <a
