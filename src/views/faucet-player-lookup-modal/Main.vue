@@ -10,7 +10,7 @@
       ><SearchIcon class="w-4 h-4 mr-1" />Player Lookup</a
     >
   </div>
-  <div id="header-footer-slide-over" class="p-5">
+  <div id="header-footer-slide-over">
     <!-- BEGIN: Slide Over Toggle -->
     <!-- END: Slide Over Toggle -->
     <!-- BEGIN: Slide Over Content -->

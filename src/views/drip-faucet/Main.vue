@@ -119,7 +119,7 @@
         <div class="col-span-12 xl:col-span-6 mt-2 intro-y">
           <div class="grid grid-cols-12 gap-6">
             <div class="col-span-12 mt-2 intro-y">
-              <div class="intro-y box p-5">
+              <div class="intro-y box p-2">
                 <div class="flex flex-col xl:flex-row xl:items-center">
                   <div class="flex mx-auto">
                     <div>
@@ -205,11 +205,11 @@
               </div>
             </div>
 
-            <div class="col-span-12 intro-y">
+            <!-- <div class="col-span-12 intro-y">
               <h2 class="text-lg font-medium truncate mr-5">Price stats</h2>
-            </div>
+            </div> -->
             <div class="col-span-12 xl:col-span-8 intro-y">
-              <div class="intro-y box p-5">
+              <div class="intro-y box p-2">
                 <div class="flex flex-col xl:flex-row xl:items-center">
                   <div class="flex mx-auto">
                     <div>

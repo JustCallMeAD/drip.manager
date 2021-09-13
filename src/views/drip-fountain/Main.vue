@@ -219,31 +219,34 @@
         <div class="flex flex-row ml-3 mt-6 mr-5">
           <h2 class="font-extrabold">TO:</h2>
         </div>
-        <div class="flex flex-row mt-1 ml-3 mt-1 mr-5">
-          <div class="mr-auto font-medium">≈ {{ toCoinFiatValue }} $</div>
-          <div class="flex-shrink-0">{{ toBalance }} {{ ' ' + toCoin }}</div>
-        </div>
-        <div class="flex flex-row items-center ml-3 mr-3 mt-1">
-          <a
-            id="toAmountInput"
-            class="form-control"
-            placeholder="0.0000"
-            style="box-shadow: none"
-            >{{ toAmount }}</a
+
+        <div class="border-2 rounded-lg p-2 ml-1 mr-1">
+          <div class="flex flex-row mt-1 ml-3 mt-1 mr-5">
+            <div class="mr-auto font-medium">≈ {{ toCoinFiatValue }} $</div>
+            <div class="flex-shrink-0">{{ toBalance }} {{ ' ' + toCoin }}</div>
+          </div>
+          <div class="flex flex-row items-center ml-3 mr-3 mt-1">
+            <a
+              id="toAmountInput"
+              class="form-control"
+              placeholder="0.0000"
+              style="box-shadow: none"
+              >{{ toAmount }}</a
+            >
+          </div>
+          <div
+            v-if="toMinAmount > 0"
+            class="flex flex-row items-center ml-3 mr-3 mt-1"
           >
-        </div>
-        <div
-          v-if="toMinAmount > 0"
-          class="flex flex-row items-center ml-3 mr-3 mt-1"
-        >
-          Minimum received: {{ toMinAmount }}
-          <!-- <RefreshCcwIcon/> -->
-        </div>
-        <div class="flex flex-row items-center ml-3 mr-3 mt-1">
-          Slippage tolerance: {{ slippage }}%
-        </div>
-        <div class="flex flex-row items-center ml-3 mb-2 mr-3 mt-1">
-          * Estimated values only
+            Minimum received: {{ toMinAmount }}
+            <!-- <RefreshCcwIcon/> -->
+          </div>
+          <div class="flex flex-row items-center ml-3 mr-3 mt-1">
+            Slippage tolerance: {{ slippage }}%
+          </div>
+          <div class="flex flex-row items-center ml-3 mb-2 mr-3 mt-1">
+            * Estimated values only
+          </div>
         </div>
         <div class="p-5 border-t border-gray-200 dark:border-dark-6">
           <button
@@ -283,7 +286,7 @@
       <!-- END: Input -->
     </div>
     <!-- <div class="intro-y col-span-12 lg:col-span-6 mt-6">
-      <DripTradingView />
+      <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-drip-efpxa/embed/charts?id=80aa1523-3c2f-4b95-8e99-d7241e20ecf1&theme=light"></iframe>
     </div> -->
   </div>
 </template>
