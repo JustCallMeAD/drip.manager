@@ -174,35 +174,39 @@
         <div class="flex flex-row ml-3 mt-4 mr-5">
           <h2 class="font-extrabold">FROM:</h2>
         </div>
-        <div class="flex flex-row ml-3 mt-1 mr-5">
-          <div class="mr-auto font-medium">≈ {{ fromCoinFiatValue }} $</div>
-          <div class="flex-shrink-0">
-            {{ fromBalance }} {{ ' ' + fromCoin }}
+
+        <div class="border-2 rounded-lg p-2 ml-1 mr-1">
+          <div class="flex flex-row ml-3 mt-1 mr-5">
+            <div class="mr-auto font-medium">≈ {{ fromCoinFiatValue }} $</div>
+            <div class="flex-shrink-0">
+              {{ fromBalance }} {{ ' ' + fromCoin }}
+            </div>
+          </div>
+          <div class="flex flex-row items-center ml-3 mr-3 mt-1">
+            <input
+              id="fromAmountInput"
+              type="number"
+              min="0"
+              class="form-control"
+              placeholder="0.0000"
+              style="
+                border-width: 0.5px;
+                box-shadow: none;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+              "
+              v-model="fromAmount"
+            />
+            <button
+              class="btn btn-secondary"
+              @click="setFromMax"
+              style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+            >
+              MAX
+            </button>
           </div>
         </div>
-        <div class="flex flex-row items-center ml-3 mr-3 mt-1">
-          <input
-            id="fromAmountInput"
-            type="number"
-            min="0"
-            class="form-control"
-            placeholder="0.0000"
-            style="
-              border-width: 0.5px;
-              box-shadow: none;
-              border-top-right-radius: 0;
-              border-bottom-right-radius: 0;
-            "
-            v-model="fromAmount"
-          />
-          <button
-            class="btn btn-secondary"
-            @click="setFromMax"
-            style="border-top-left-radius: 0; border-bottom-left-radius: 0"
-          >
-            MAX
-          </button>
-        </div>
+
         <div class="flex flex-row ml-3 mt-8 mr-5">
           <div class="mr-auto"></div>
           <div class="">
@@ -241,19 +245,11 @@
         <div class="flex flex-row items-center ml-3 mb-2 mr-3 mt-1">
           * Estimated values only
         </div>
-        <div
-          class="
-            flex flex-row
-            items-center
-            p-5
-            border-t border-gray-200
-            dark:border-dark-6
-          "
-        >
+        <div class="p-5 border-t border-gray-200 dark:border-dark-6">
           <button
             :disabled="isWaitingForContractWrite"
             v-if="isFromBnb"
-            class="btn btn-success w-full"
+            class="btn btn-success w-full flex flex-row items-center"
             @click="swap"
           >
             Buy DRIP
@@ -274,6 +270,14 @@
           >
             Sell DRIP
           </button>
+          <button
+            :disabled="isWaitingForContractWrite"
+            v-if="dripBalance > 0"
+            class="btn btn-warning w-full flex flex-row items-center mt-2"
+            @click="depositAll"
+          >
+            Deposit {{ dripBalance }} DRIP
+          </button>
         </div>
       </div>
       <!-- END: Input -->
@@ -285,14 +289,14 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import smManager from '@/smartcontracts/smartcontracts-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import store from '@/store'
 // import DripTradingView from '@/views/fountain-tradeview/Main.vue'
 
 export default defineComponent({
-  components: { },
+  components: {},
   methods: {
     setFromMax: function (event) {
       if (this.isFromBnb) {
@@ -309,6 +313,9 @@ export default defineComponent({
     approve: async function () {
       this.triggerApprove()
     },
+    depositAll: async function () {
+      this.triggerDepositAll()
+    },
     changeOrientation: function () {
       this.isFromBnb = !this.isFromBnb
       this.fromAmount = 0
@@ -319,11 +326,16 @@ export default defineComponent({
   async mounted() {
     const fountain = await smManager.getFountainContract()
     const drip = await smManager.getDripContract()
+    const faucet = await smManager.getFaucetContract()
+
     const self = this
     this.fountain = fountain
-    const currentUserAddress = store.state.main.userAddress
+    var currentUserAddress = store.state.main.userAddress
 
     this.updateCoinValues = function () {
+      if (!currentUserAddress) {
+        return
+      }
       if (self.isFromBnb) {
         self.fromCoin = 'BNB'
         self.fromBalance = self.bnbBalance
@@ -387,9 +399,26 @@ export default defineComponent({
       }
     }
 
+    this.triggerDepositAll = async function () {
+      try {
+        self.isWaitingForContractWrite = true
+        await faucet.deposit(
+          currentUserAddress,
+          (self.dripBalance * 10 ** 18).toString()
+        )
+        self.isWaitingForContractWrite = false
+        self.isApproveRequired = false
+        alert('Deposit successfully')
+      } catch (e) {
+        alert(e.message)
+      } finally {
+        self.isWaitingForContractWrite = false
+      }
+    }
+
     this.isUpdating = false
     this.update = async function () {
-      if (self.isUpdating) {
+      if (self.isUpdating || !currentUserAddress) {
         return
       }
 
@@ -411,6 +440,8 @@ export default defineComponent({
           (await drip.getDripBalanceOf(currentUserAddress)) / 10 ** 18
         self.dripBalance = self.dripBalance < 0.000001 ? 0.0 : self.dripBalance
         self.updateCoinValues()
+
+        self.buddyAddress = await faucet.getBuddyAddress(currentUserAddress)
       } catch (e) {
         setTimeout(this.updater, 2000)
         console.error(e)
@@ -421,6 +452,16 @@ export default defineComponent({
 
     this.update()
     this.updater = setInterval(this.update, 10000)
+
+    watch(
+      computed(() => store.state.main.userAddress),
+      () => {
+        currentUserAddress = store.state.main.userAddress
+        this.fromAmount = 0
+        this.toAmount = 0
+        this.update()
+      }
+    )
   },
   unmounted() {
     clearInterval(this.updater)
@@ -446,8 +487,12 @@ export default defineComponent({
     const isApproveRequired = ref(false)
 
     const isWaitingForContractWrite = ref(false)
+
+    const dripBalance = ref(0)
+
     // var tokenUpdate
     return {
+      dripBalance,
       fromAmount,
       toAmount,
       toMinAmount,

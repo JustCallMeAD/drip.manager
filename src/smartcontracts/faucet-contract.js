@@ -49,8 +49,8 @@ class FaucetContract {
     )
   }
 
-  async getBuddyAddress() {
-    const userInfo = await this.getUserInfo()
+  async getBuddyAddress(address) {
+    const userInfo = await this.getUserInfo(address)
     return userInfo.upline
   }
 
@@ -79,6 +79,11 @@ class FaucetContract {
   // Write to blockchain
   claim(address) {
     return this.contract.methods.claim().send({ from: address })
+  }
+
+  // Write to blockchain
+  deposit(address, amount) {
+    return this.contract.methods.deposit(address, amount).send({ from: address })
   }
 }
 

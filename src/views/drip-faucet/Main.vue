@@ -18,7 +18,7 @@
             <h2 class="text-lg font-medium truncate mr-5">Faucet</h2>
           </div> -->
           <div class="grid grid-cols-12 gap-6 mt-2">
-            <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+            <div class="col-span-6 xl:col-span-3 intro-y">
               <div class="report-box zoom-in">
                 <div class="box p-5">
                   <div class="flex">
@@ -27,7 +27,7 @@
                       &nbsp;Available
                     </div>
                   </div>
-                  <div class="text-3xl font-medium leading-8 mt-6">
+                  <div class="text-2xl xl:text-3xl font-medium leading-8 mt-6">
                     {{ claimsAvailable }}
                   </div>
                   <div
@@ -40,7 +40,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+            <div class="col-span-6 xl:col-span-3 intro-y">
               <div class="report-box zoom-in">
                 <div class="box p-5">
                   <div class="flex">
@@ -49,7 +49,7 @@
                       &nbsp;Deposits
                     </div>
                   </div>
-                  <div class="text-3xl font-medium leading-8 mt-6">
+                  <div class="text-2xl xl:text-3xl font-medium leading-8 mt-6">
                     {{ deposits }}
                   </div>
                   <div
@@ -61,7 +61,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+            <div class="col-span-6 xl:col-span-3 intro-y">
               <div class="report-box zoom-in">
                 <div class="box p-5">
                   <div class="flex">
@@ -70,7 +70,7 @@
                       &nbsp;Claimed
                     </div>
                   </div>
-                  <div class="text-3xl font-medium leading-8 mt-6">
+                  <div class="text-2xl xl:text-3xl font-medium leading-8 mt-6">
                     {{ claimed }}
                   </div>
                   <div class="progress h-4 rounded mt-3">
@@ -86,7 +86,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+            <div class="col-span-6 xl:col-span-3 intro-y">
               <div class="report-box zoom-in">
                 <div class="box p-5">
                   <div class="flex">
@@ -95,7 +95,7 @@
                       &nbsp;Max Payout
                     </div>
                   </div>
-                  <div class="text-3xl font-medium leading-8 mt-6">
+                  <div class="text-2xl xl:text-3xl font-medium leading-8 mt-6">
                     {{ maxPayout }}
                   </div>
                   <div class="progress h-4 rounded mt-3">
@@ -114,15 +114,101 @@
           </div>
         </div>
         <!-- END: Player stats -->
-
         <!-- BEGIN: Price stats, action buttons and buddy input -->
 
         <div class="col-span-12 xl:col-span-6 mt-2 intro-y">
           <div class="grid grid-cols-12 gap-6">
             <div class="col-span-12 mt-2 intro-y">
+              <div class="intro-y box p-5">
+                <div class="flex flex-col xl:flex-row xl:items-center">
+                  <div class="flex mx-auto">
+                    <div>
+                      <div
+                        class="
+                          text-theme-19
+                          dark:text-gray-300
+                          text-lg
+                          xl:text-xl
+                          font-medium
+                        "
+                      >
+                        {{ airdropReceived }} / {{ airdropSent }}
+                      </div>
+                      <div class="mt-0.5 text-gray-600 dark:text-gray-600">
+                        Airdrop Received/Sent
+                      </div>
+                    </div>
+                    <div
+                      class="
+                        w-px
+                        h-12
+                        border border-r border-dashed border-gray-300
+                        dark:border-dark-5
+                        mx-4
+                        xl:mx-5
+                      "
+                    ></div>
+
+                    <div>
+                      <div
+                        class="
+                          text-theme-19
+                          dark:text-gray-300
+                          text-lg
+                          xl:text-xl
+                          font-medium
+                        "
+                      >
+                        {{ rewardDirect }} / {{ rewardIndirect }}
+                      </div>
+                      <div
+                        class="
+                          mt-0.5
+                          text-gray-600
+                          dark:text-gray-600
+                          flex
+                          items-center
+                        "
+                      >
+                        <div>Rewarded direct/indirect</div>
+                      </div>
+                    </div>
+                    <div
+                      class="
+                        w-px
+                        h-12
+                        border border-r border-dashed border-gray-300
+                        dark:border-dark-5
+                        mx-4
+                        xl:mx-5
+                      "
+                    ></div>
+
+                    <div>
+                      <div
+                        class="
+                          text-theme-19
+                          dark:text-gray-300
+                          text-lg
+                          xl:text-xl
+                          font-medium
+                        "
+                      >
+                        {{ teamDirect }} / {{teamTotal}}
+                      </div>
+                      <div class="mt-0.5 text-gray-600 dark:text-gray-600">
+                        Team direct/indirect
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-span-12 intro-y">
               <h2 class="text-lg font-medium truncate mr-5">Price stats</h2>
             </div>
-            <div class="col-span-12 xl:col-span-8 mt-2 intro-y">
+            <div class="col-span-12 xl:col-span-8 intro-y">
               <div class="intro-y box p-5">
                 <div class="flex flex-col xl:flex-row xl:items-center">
                   <div class="flex">
@@ -246,7 +332,7 @@
               </div>
             </div>
             <!-- ACTION BUTTON -->
-            <div class="col-span-12 xl:col-span-4 mt-2 intro-y">
+            <div class="col-span-12 xl:col-span-4 intro-y">
               <button
                 :disabled="contractCall || isBuddyRequired"
                 @click="hydrate"
@@ -585,7 +671,6 @@ export default defineComponent({
           const userAddress = store.state.main.userAddress
           const userInfo = await faucet.queryFaucetGlobalUserInfo(userAddress)
           isUpdating = true
-
           const one = 1 * 10 ** 18
           const nbOfDripForOneBnb = await fountain.getTokenToBnbOutputPrice(
             one.toString()
@@ -647,6 +732,16 @@ export default defineComponent({
           self.maxPayoutProgressStyle = computed(() => {
             return widthStyle.replace('[pct]', maxPayoutProgress)
           })
+
+          // AIRDROPS / REWARDS
+          self.airdropReceived = userInfo.airdrops_received.toFixed(2)
+          self.airdropSent = userInfo.airdrops_total.toFixed(2)
+
+          self.rewardDirect = (userInfo.direct_bonus / decimals).toFixed(2)
+          self.rewardIndirect = (userInfo.match_bonus / decimals).toFixed(2)
+
+          self.teamDirect = userInfo.referrals
+          self.teamTotal = userInfo.total_structure
         } finally {
           isUpdating = false
         }
@@ -713,7 +808,21 @@ export default defineComponent({
 
     const buddyAirdropSent = ref(0)
 
+    const airdropReceived = ref(0)
+    const airdropSent = ref(0)
+
+    const rewardDirect = ref(0)
+    const rewardIndirect = ref(0)
+
+    const teamDirect = ref(0)
+    const teamTotal = ref(0)
     return {
+      teamDirect,
+      teamTotal,
+      rewardDirect,
+      rewardIndirect,
+      airdropReceived,
+      airdropSent,
       dripFiatValue,
       dripBnbRatio,
       dripBnbRatio24hChange,

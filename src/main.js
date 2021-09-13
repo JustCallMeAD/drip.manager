@@ -11,9 +11,6 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import './assets/sass/app.scss'
 
-import dotenv from 'dotenv'
-dotenv.config()
-
 // SASS Theme
 const app = createApp(App).use(store).use(router).use(PrimeVue)
 
