@@ -188,7 +188,6 @@ export default defineComponent({
       return nestedMenu(store.state.topMenu.menu, route)
     })
     const isConnected = ref(false)
-
     watch(
       computed(() => route.path),
       () => {

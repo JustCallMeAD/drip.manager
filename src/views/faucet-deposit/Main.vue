@@ -65,7 +65,8 @@ export default defineComponent({
         await faucet.deposit(address, (this.inputValue * decimals).toString())
         alert('Deposit successful')
       } catch (e) {
-        alert(e.message)
+        alert(JSON.stringify(e))
+        console.error(JSON.stringify(e))
       } finally {
         this.contractCall = false
       }

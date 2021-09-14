@@ -641,6 +641,7 @@ export default defineComponent({
             ).toFixed(3)
           })
           .catch((e) => {
+            console.error(JSON.stringify(e))
             alert(JSON.stringify(e))
           })
       }
@@ -659,6 +660,7 @@ export default defineComponent({
         return buddy
           .setBuddy(self.inputBuddyAddress)
           .catch((e) => {
+            console.error(JSON.stringify(e))
             alert(JSON.stringify(e))
           })
           .finally(() => {})
@@ -677,6 +679,7 @@ export default defineComponent({
           })
           .then(this.updater)
           .catch((e) => {
+            console.error(JSON.stringify(e))
             alert(JSON.stringify(e))
           })
           .finally(() => {
@@ -695,6 +698,7 @@ export default defineComponent({
           })
           .then(this.updater)
           .catch((e) => {
+            console.error(JSON.stringify(e))
             alert(JSON.stringify(e))
           })
           .finally(() => {
@@ -714,6 +718,7 @@ export default defineComponent({
           })
           .then(this.updater)
           .catch((e) => {
+            console.error(JSON.stringify(e))
             alert(JSON.stringify(e))
           })
           .finally(() => {
@@ -837,6 +842,7 @@ export default defineComponent({
         }, 10000)
       })
     } catch (err) {
+      console.error(err)
       setTimeout(this.updater, 2000)
     }
   },
