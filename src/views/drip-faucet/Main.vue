@@ -753,20 +753,22 @@ export default defineComponent({
       // END: Hydrate/Claim/Deposit All actions
 
       this.updater = async function () {
-        if (isUpdating || !store.state.main.userAddress) {
-          return Promise.resolve()
+        const userAddress = store.state.main.userAddress
+        if (isUpdating) {
+          return
         }
 
         try {
-          if (store.state.main.userAddress) {
+          if (userAddress) {
             self.isUserConnected = true
           } else {
             self.isUserConnected = false
+            return
           }
 
           const faucet = await smManager.getFaucetContract()
           const drip = await smManager.getDripContract()
-          const userAddress = store.state.main.userAddress
+
           const userInfo = await faucet.queryFaucetGlobalUserInfo(userAddress)
           isUpdating = true
           const one = 1 * 10 ** 18
@@ -913,6 +915,7 @@ export default defineComponent({
     const isBuddyRequired = ref(false)
     const isBuddySpecified = ref(false)
     const inputBuddyAddress = ref('')
+    const buddyAirdropReceived = ref(0)
 
     const buddyAirdropSent = ref(0)
 
@@ -929,6 +932,7 @@ export default defineComponent({
 
     const dripBalance = ref(0)
     return {
+      buddyAirdropReceived,
       isUserConnected,
       dripBalance,
       teamDirect,

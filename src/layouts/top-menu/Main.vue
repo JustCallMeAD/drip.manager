@@ -148,7 +148,6 @@ import TopBar from '@/components/top-bar/Main.vue'
 import MobileMenu from '@/components/mobile-menu/Main.vue'
 import DarkModeSwitcher from '@/components/dark-mode-switcher/Main.vue'
 import { nestedMenu, linkTo } from '@/layouts/side-menu'
-import authManager from '@/auth/auth-manager'
 
 const formatAddress = (address) => {
   if (address) {
@@ -165,17 +164,6 @@ export default defineComponent({
     DarkModeSwitcher
   },
   methods: {
-    logout: function () {
-      const self = this
-      authManager
-        .logout()
-        .then(() => {
-          self.router.push({ name: 'login' })
-        })
-        .catch((e) => {
-          alert(e)
-        })
-    }
   },
   mounted() {},
   setup() {
@@ -226,6 +214,15 @@ export default defineComponent({
     const connect = async function () {
       if (window.ethereum) {
         try {
+          const chainId = await window.ethereum.request({
+            method: 'eth_chainId'
+          })
+
+          if (chainId != 0x38) {
+            alert('Your wallet must be connected to the BSC Mainnet network')
+            return
+          }
+
           if (!store.state.main.userAddress) {
             const accounts = await window.ethereum.request({
               method: 'eth_requestAccounts'
