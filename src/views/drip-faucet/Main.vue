@@ -419,87 +419,26 @@
                             Enter your buddy address here.
                           </div>
                         </div>
-                        <div class="flex flex-col p-2 mt-1 w-1/3">
-                          <div class="flex justify-between w-full">
-                            <div class="mr-6">
-                              <label class="font-extrabold">Airdrop Sent</label>
-                            </div>
-                            <div class="text-right">
-                              {{ buddyAirdropSent }} DRIP
-                            </div>
+
+                        <div class="flex p-2" v-if="isBuddySpecified">
+                          <div class="flex flex-col mr-6">
+                            <label class="font-extrabold">Airdrop Sent</label>
+                            <label class="font-extrabold"
+                              >Airdrop Received</label
+                            >
+                            <label class="font-extrabold">Last Airdrop</label>
+                            <label class="font-extrabold">Total deposits</label>
+                            <label class="font-extrabold">Net deposits</label>
                           </div>
-                          <div class="flex">
-                            <div class="mr-6">
-                              <label class="font-extrabold"
-                                >Airdrop Received</label
-                              >
-                            </div>
-                            <div class="text-right">
-                              {{ buddyAirdropReceived }} DRIP
-                            </div>
+                          <div class="flex flex-col">
+                            <div>{{ buddyAirdropSent }} DRIP</div>
+                            <div>{{ buddyAirdropReceived }} DRIP</div>
+                            <div>{{ buddyLastAirdropDays }}</div>
+                            <div>{{ buddyTotalDeposits }} DRIP</div>
+                            <div>{{ buddyNetDeposits }} DRIP</div>
                           </div>
                         </div>
 
-                        <div v-if="isBuddySpecified" class="mt-3">
-                          <label for="regular-form-4" class="form-label"
-                            >Airdrop Sent</label
-                          >
-                          <div class="input-group">
-                            <input
-                              id="regular-form-4"
-                              :disabled="true"
-                              type="text"
-                              class="form-control"
-                              :value="buddyAirdropSent"
-                            />
-                            <div
-                              id="input-group-price"
-                              class="input-group-text"
-                            >
-                              Drips
-                            </div>
-                          </div>
-                        </div>
-                        <div v-if="isBuddySpecified" class="mt-3">
-                          <label for="regular-form-5" class="form-label"
-                            >Airdrop Received</label
-                          >
-                          <div class="input-group">
-                            <input
-                              id="regular-form-5"
-                              :disabled="true"
-                              type="text"
-                              class="form-control"
-                              :value="buddyAirdropReceived"
-                            />
-                            <div
-                              id="input-group-price"
-                              class="input-group-text"
-                            >
-                              Drips
-                            </div>
-                          </div>
-                        </div>
-                        <div v-if="isBuddySpecified" class="mt-3">
-                          <label for="regular-form-6" class="form-label"
-                            >Total Deposits</label
-                          >
-                          <div class="input-group">
-                            <input
-                              id="regular-form-6"
-                              :disabled="true"
-                              type="text"
-                              class="form-control"
-                              :value="buddyTotalDeposits"
-                            />
-                            <div
-                              id="input-group-price"
-                              class="input-group-text"
-                            >
-                              Drips
-                            </div>
-                          </div>
-                        </div>
                         <Message
                           v-if="isBuddySpecified && isBuddyRequired"
                           severity="warn"
@@ -639,6 +578,22 @@ export default defineComponent({
           self.buddyAirdropSent = buddyUserInfo.airdrops_total.toFixed(3)
           self.buddyAirdropReceived = buddyUserInfo.airdrops_received.toFixed(3)
           self.buddyTotalDeposits = buddyUserInfo.total_deposits.toFixed(3)
+          self.buddyNetDeposits = (
+            buddyUserInfo.total_deposits +
+            buddyUserInfo.airdrops_total +
+            buddyUserInfo.rolls / decimals -
+            buddyUserInfo.total_payouts
+          ).toFixed(3)
+
+          if (buddyUserInfo.last_airdrop) {
+            self.buddyLastAirdropDays =
+              Math.floor(
+                (new Date().getTime() / 1000 - buddyUserInfo.last_airdrop) /
+                  (60 * 60 * 24)
+              ) + ' Days Ago'
+          } else {
+            self.buddyLastAirdropDays = 'Never'
+          }
         }
       }
 
@@ -651,19 +606,29 @@ export default defineComponent({
 
         const faucet = await smManager.getFaucetContract()
         faucet
-          .queryFaucetGlobalUserInfo(store.state.main.userAddress)
-          .then((userInfoTotals) => {
+          .queryFaucetGlobalUserInfo(self.inputBuddyAddress)
+          .then((buddyUserInfo) => {
             self.isBuddySpecified = true
+            self.buddyAirdropSent = buddyUserInfo.airdrops_total.toFixed(3)
+            self.buddyAirdropReceived =
+              buddyUserInfo.airdrops_received.toFixed(3)
+            self.buddyTotalDeposits = buddyUserInfo.total_deposits.toFixed(3)
+            self.buddyNetDeposits = (
+              buddyUserInfo.total_deposits +
+              buddyUserInfo.airdrops_total +
+              buddyUserInfo.rolls / decimals -
+              buddyUserInfo.total_payouts
+            ).toFixed(3)
 
-            self.buddyAirdropSent = (
-              userInfoTotals.airdrops_total / decimals
-            ).toFixed(3)
-            self.buddyAirdropReceived = (
-              userInfoTotals.airdrops_received / decimals
-            ).toFixed(3)
-            self.buddyTotalDeposits = (
-              userInfoTotals.total_deposits / decimals
-            ).toFixed(3)
+            if (buddyUserInfo.last_airdrop) {
+              self.buddyLastAirdropDays =
+                Math.floor(
+                  (new Date().getTime() / 1000 - buddyUserInfo.last_airdrop) /
+                    (60 * 60 * 24)
+                ) + ' Days Ago'
+            } else {
+              self.buddyLastAirdropDays = 'Never'
+            }
           })
           .catch((e) => {
             console.error(JSON.stringify(e))
@@ -916,9 +881,10 @@ export default defineComponent({
     const isBuddySpecified = ref(false)
     const inputBuddyAddress = ref('')
     const buddyAirdropReceived = ref(0)
+    const buddyLastAirdropDays = ref('Never')
+    const buddyNetDeposits = ref(0)
 
     const buddyAirdropSent = ref(0)
-
     const airdropReceived = ref(0)
     const airdropSent = ref(0)
 
@@ -960,6 +926,8 @@ export default defineComponent({
       isBuddySpecified,
       inputBuddyAddress,
       buddyAirdropSent,
+      buddyLastAirdropDays,
+      buddyNetDeposits,
       hydrate,
       claim
     }

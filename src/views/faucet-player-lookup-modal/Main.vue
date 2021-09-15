@@ -116,16 +116,14 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue'
-import authManager from '@/auth/auth-manager'
-const cloud = authManager.getCloudRunner()
+import scManager from '@/smartcontracts/smartcontracts-manager.js'
 const decimals = 10 ** 18
 
 export default defineComponent({
   methods: {
     lookup: async function () {
-      const userInfo = await cloud('queryFaucetGlobalUserInfo', {
-        address: this.playerAddress
-      })
+      const faucet = await scManager.getFaucetContract()
+      const userInfo = await faucet.queryFaucetGlobalUserInfo(this.playerAddress)
       while (this.playerLookupResultsRaw.length > 0) {
         this.playerLookupResultsRaw.pop()
       }
@@ -148,7 +146,11 @@ export default defineComponent({
       })
       this.playerLookupResultsRaw.push({
         field: 'Total Deposits',
-        value: (userInfo.total_deposits / decimals).toFixed(3)
+        value: (userInfo.total_deposits).toFixed(3)
+      })
+      this.playerLookupResultsRaw.push({
+        field: 'Total Claimed',
+        value: (userInfo.total_payouts).toFixed(3)
       })
       this.playerLookupResultsRaw.push({
         field: 'Total Hydrates',
@@ -156,11 +158,11 @@ export default defineComponent({
       })
       this.playerLookupResultsRaw.push({
         field: 'Airdrop Sent',
-        value: (userInfo.airdrops_total / decimals).toFixed(3)
+        value: (userInfo.airdrops_total).toFixed(3)
       })
       this.playerLookupResultsRaw.push({
         field: 'Airdrop Received',
-        value: (userInfo.airdrops_received / decimals).toFixed(3)
+        value: (userInfo.airdrops_received).toFixed(3)
       })
       this.playerLookupResultsRaw.push({
         field: 'Last Airdrop',
@@ -169,10 +171,10 @@ export default defineComponent({
       this.playerLookupResultsRaw.push({
         field: 'Net Deposits',
         value: (
-          userInfo.total_deposits / decimals +
-          userInfo.airdrops_total / decimals +
+          userInfo.total_deposits +
+          userInfo.airdrops_total +
           userInfo.rolls / decimals -
-          userInfo.total_payouts / decimals
+          userInfo.total_payouts
         ).toFixed(3)
       })
     }
