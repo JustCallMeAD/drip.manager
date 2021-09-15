@@ -91,7 +91,7 @@
                 <div class="box p-5">
                   <div class="flex">
                     <AlertOctagonIcon class="report-box__icon text-theme-9" />
-                    <div class="text-base text-gray-600 mt-1">
+                    <div class="text-base text-gray-600 mt-1 whitespace-nowrap">
                       &nbsp;Max Payout
                     </div>
                   </div>
