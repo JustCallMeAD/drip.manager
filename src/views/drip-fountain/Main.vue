@@ -224,7 +224,9 @@
         <div class="border-2 rounded-lg p-2 ml-1 mr-1">
           <div class="flex flex-row mt-1 ml-3 mt-1 mr-5">
             <div class="mr-auto font-medium">≈ {{ toCoinFiatValue }} $</div>
-            <div class="flex-shrink-0">{{ toBalance.toFixed(6) }} {{ ' ' + toCoin }}</div>
+            <div class="flex-shrink-0">
+              {{ toBalance.toFixed(6) }} {{ ' ' + toCoin }}
+            </div>
           </div>
           <div class="flex flex-row items-center ml-3 mr-3 mt-1">
             <a
@@ -366,15 +368,39 @@ export default defineComponent({
     this.triggerSwap = async function () {
       try {
         self.isWaitingForContractWrite = true
-        const minAmount = (self.toMinAmount * 10 ** 18).toString()
-        const fromAmount = (self.fromAmount * 10 ** 18).toString()
+        var minAmount = (self.toMinAmount * 10 ** 18).toString()
+        var fromAmount = (self.fromAmount * 10 ** 18).toString()
+
+        if (!self.fromAmount) {
+          alert('Specify a deposit amount')
+          return
+        }
+        if (self.fromAmount <= 0) {
+          alert('A positive amount must be specified')
+          return
+        }
+
         if (self.isFromBnb) {
+          if (self.fromAmount > self.bnbBalance) {
+            alert('The amount cannot be greater than your wallet balance')
+            return
+          }
+
           await fountain.bnbToTokenSwapInput(
             fromAmount,
             minAmount,
             currentUserAddress
           )
         } else {
+          if (self.fromAmount > self.dripBalance) {
+            alert('The amount cannot be greater than your wallet balance')
+            return
+          }
+
+          if (self.fromAmount == self.dripBalance) {
+            fromAmount = await drip.getDripBalanceOf(currentUserAddress)
+          }
+
           await fountain.tokenToBnbSwapInput(
             fromAmount,
             minAmount,
@@ -383,6 +409,7 @@ export default defineComponent({
         }
         alert('Swap completed')
       } catch (e) {
+        console.error(JSON.stringify(e))
         alert(e.message)
       } finally {
         self.isWaitingForContractWrite = false
@@ -408,10 +435,7 @@ export default defineComponent({
         self.isWaitingForContractWrite = true
         const drip = await smManager.getDripContract()
         const dripBalance = await drip.getDripBalanceOf(currentUserAddress)
-        await faucet.deposit(
-          currentUserAddress,
-          (dripBalance).toString()
-        )
+        await faucet.deposit(currentUserAddress, dripBalance.toString())
         self.isWaitingForContractWrite = false
         self.isApproveRequired = false
         alert('Deposit successfully')
@@ -441,7 +465,8 @@ export default defineComponent({
         self.bnbFiatValue = await dripUtils.calcBNBPrice()
         self.dripBnbRatio = one / nbOfDripForOneBnb
         self.dripFiatValue = self.dripBnbRatio * self.bnbFiatValue
-        self.bnbBalance = await smManager.getBnbBalanceOf(currentUserAddress)
+        self.bnbBalance =
+          (await smManager.getBnbBalanceOf(currentUserAddress)) / 10 ** 18
         self.dripBalance =
           (await drip.getDripBalanceOf(currentUserAddress)) / 10 ** 18
         self.dripBalance = self.dripBalance < 0.000001 ? 0.0 : self.dripBalance

@@ -30,7 +30,6 @@ export default {
   async getBnbBalanceOf(userAddress) {
     return init()
       .then(() => web3.eth.getBalance(userAddress))
-      .then((value) => value / 10 ** 18)
       .catch((e) => console.log(e))
   },
   async getBuddyContract(userAddress) {

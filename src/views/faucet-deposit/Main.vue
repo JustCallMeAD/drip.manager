@@ -63,6 +63,13 @@ export default defineComponent({
 
       try {
         this.contractCall = true
+        const drip = await scManager.getDripContract()
+        const dripBalance = (await drip.getDripBalanceOf(address)) / 10 ** 18
+        if (dripBalance < this.inputValue) {
+          alert('The amount cannot be greater than your wallet balance')
+          return
+        }
+
         const faucet = await scManager.getFaucetContract()
         await faucet.deposit(address, (this.inputValue * decimals).toString())
         alert('Deposit successful')

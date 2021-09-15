@@ -6,7 +6,6 @@ class DripContract {
     this.contract = new web3.eth.Contract(abi, addresses.DRIP_TOKEN_ADDRESS)
   }
 
-  // Write to blockchain
   getDripBalanceOf(address) {
     return this.contract.methods.balanceOf(address).call()
   }

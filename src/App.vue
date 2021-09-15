@@ -22,7 +22,6 @@ export default defineComponent({
       })
 
       try {
-        // alert(store.state.main.userAddress)
         const address = window.ethereum.selectedAddress
         store.dispatch('main/setUserAddress', address)
       } catch (error) {

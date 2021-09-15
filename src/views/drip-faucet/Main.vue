@@ -214,7 +214,7 @@
                   <div class="flex flex-nowrap">
                     <button
                       @click="depositAll"
-                      :disabled="dripBalance == 0"
+                      :disabled="dripBalance == 0 || !isUserConnected"
                       class="btn btn-secondary whitespace-nowrap"
                       style="
                         border-top-right-radius: 0;
@@ -224,7 +224,7 @@
                       Deposit ALL
                     </button>
                     <button
-                      :disabled="dripBalance == 0"
+                      :disabled="dripBalance == 0 || !isUserConnected"
                       @click="$refs.faucetDepositDropDown.show2()"
                       class="btn btn-secondary whitespace-nowrap"
                       style="
@@ -369,14 +369,18 @@
             <div class="col-span-12 xl:col-span-4 intro-y">
               <div class="flex flex-wrap">
                 <button
-                  :disabled="contractCall || isBuddyRequired"
+                  :disabled="
+                    contractCall || isBuddyRequired || !isUserConnected
+                  "
                   @click="hydrate"
                   class="btn btn-primary w-32 mr-2 mb-2"
                 >
                   <RefreshCwIcon class="w-4 h-4 mr-2" /> Hydrate
                 </button>
                 <button
-                  :disabled="contractCall || isBuddyRequired"
+                  :disabled="
+                    contractCall || isBuddyRequired || !isUserConnected
+                  "
                   @click="claim"
                   class="btn btn-primary w-32 mr-2 mb-2"
                 >
@@ -415,6 +419,27 @@
                             Enter your buddy address here.
                           </div>
                         </div>
+                        <div class="flex flex-col p-2 mt-1 w-1/3">
+                          <div class="flex justify-between w-full">
+                            <div class="mr-6">
+                              <label class="font-extrabold">Airdrop Sent</label>
+                            </div>
+                            <div class="text-right">
+                              {{ buddyAirdropSent }} DRIP
+                            </div>
+                          </div>
+                          <div class="flex">
+                            <div class="mr-6">
+                              <label class="font-extrabold"
+                                >Airdrop Received</label
+                              >
+                            </div>
+                            <div class="text-right">
+                              {{ buddyAirdropReceived }} DRIP
+                            </div>
+                          </div>
+                        </div>
+
                         <div v-if="isBuddySpecified" class="mt-3">
                           <label for="regular-form-4" class="form-label"
                             >Airdrop Sent</label
@@ -733,6 +758,12 @@ export default defineComponent({
         }
 
         try {
+          if (store.state.main.userAddress) {
+            self.isUserConnected = true
+          } else {
+            self.isUserConnected = false
+          }
+
           const faucet = await smManager.getFaucetContract()
           const drip = await smManager.getDripContract()
           const userAddress = store.state.main.userAddress
@@ -894,8 +925,11 @@ export default defineComponent({
     const teamDirect = ref(0)
     const teamTotal = ref(0)
 
+    const isUserConnected = ref(false)
+
     const dripBalance = ref(0)
     return {
+      isUserConnected,
       dripBalance,
       teamDirect,
       teamTotal,
