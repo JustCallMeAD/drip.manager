@@ -26,7 +26,9 @@
           >
             Close
           </button>
-          <button class="btn btn-primary w-32 ml-2">Deposit</button>
+          <button @click="deposit" class="btn btn-primary w-32 ml-2">
+            Deposit
+          </button>
         </div>
       </div>
     </div>
@@ -70,7 +72,7 @@ export default defineComponent({
       } finally {
         this.contractCall = false
       }
-      this.$refs.input.value = null
+      this.inputValue = null
       this.hide()
     }
   },
