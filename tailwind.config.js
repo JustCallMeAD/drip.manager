@@ -1,6 +1,9 @@
 const primaryColors = require('@left4code/tw-starter/dist/js/colors')
 
 module.exports = {
+  corePlugins: {
+    margin: true
+  },
   mode: 'jit',
   purge: [
     './src/**/*.{php,html,js,jsx,ts,tsx,vue}',
@@ -9,7 +12,23 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    borderColor: theme => ({
+    screens: {
+      sm: '640px',
+      // => @media (min-width: 640px) { ... }
+
+      md: '768px',
+      // => @media (min-width: 768px) { ... }
+
+      lg: '1024px',
+      // => @media (min-width: 1024px) { ... }
+
+      xl: '1280px',
+      // => @media (min-width: 1280px) { ... }
+
+      '2xl': '1536px',
+      // => @media (min-width: 1536px) { ... }
+    },
+    borderColor: (theme) => ({
       ...theme('colors'),
       DEFAULT: primaryColors.gray['300']
     }),
@@ -59,6 +78,14 @@ module.exports = {
       container: {
         center: true
       },
+      gridRowStart: {
+        1: '1',
+        2: '2',
+        3: '3',
+        4: '4',
+        5: '5',
+        6: '6'
+      },
       maxWidth: {
         '1/4': '25%',
         '1/2': '50%',
@@ -72,6 +99,7 @@ module.exports = {
     }
   },
   variants: {
+    textColor: ['responsive', 'hover', 'focus', 'group-hover'],
     extend: {
       boxShadow: ['dark']
     }

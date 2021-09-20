@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-2 gap-2 sm:gap-12">
+  <div class="grid grid-cols-1 gap-2 sm:gap-12">
     <div class="intro-y col-span-2 lg:col-span-1 mt-6">
       <!-- BEGIN: Input -->
       <div class="intro-y box sm:mx-auto sm:w-[500px] mb-8">
@@ -263,7 +263,7 @@
           <button
             :disabled="isWaitingForContractWrite"
             v-else-if="isApproveRequired"
-            class="btn btn-danger w-full"
+            class="btn btn-danger w-full flex flex-row items-center mt-2"
             @click="approve"
           >
             Approve DRIP
@@ -271,7 +271,7 @@
           <button
             :disabled="isWaitingForContractWrite"
             v-else
-            class="btn btn-danger w-full"
+            class="btn btn-danger w-full flex flex-row items-center mt-2"
             @click="swap"
           >
             Sell DRIP
@@ -283,6 +283,14 @@
             @click="depositAll"
           >
             Deposit {{ dripBalance }} DRIP
+          </button>
+          <button
+            :disabled="isWaitingForContractWrite"
+            v-if="!isApproveRequired & !isFromBnb"
+            class="btn btn-danger w-full flex flex-row items-center mt-2"
+            @click="unapprove"
+          >
+            Unapprove DRIP
           </button>
         </div>
       </div>
@@ -318,6 +326,9 @@ export default defineComponent({
     },
     approve: async function () {
       this.triggerApprove()
+    },
+    unapprove: async function () {
+      this.triggerUnapprove()
     },
     depositAll: async function () {
       this.triggerDepositAll()
@@ -416,13 +427,27 @@ export default defineComponent({
       }
     }
 
-    this.triggerApprove = async function () {
+    this.triggerApprove = async function (value) {
       try {
         self.isWaitingForContractWrite = true
-        await drip.setAllowance(currentUserAddress)
+        await drip.setAllowance(currentUserAddress, value)
         self.isWaitingForContractWrite = false
         self.isApproveRequired = false
         alert('Approved successfully')
+      } catch (e) {
+        alert(e.message)
+      } finally {
+        self.isWaitingForContractWrite = false
+      }
+    }
+
+    this.triggerUnapprove = async function () {
+      try {
+        self.isWaitingForContractWrite = true
+        await drip.setAllowance(currentUserAddress, '0000000000000000000')
+        self.isWaitingForContractWrite = false
+        self.isApproveRequired = false
+        alert('Unapproved successfully')
       } catch (e) {
         alert(e.message)
       } finally {
@@ -458,9 +483,8 @@ export default defineComponent({
           one.toString()
         )
 
-        self.isApproveRequired = !(
-          (await drip.getAllowance(currentUserAddress)) > 0
-        )
+        const allowance = await drip.getAllowance(currentUserAddress)
+        self.isApproveRequired = allowance == 0
 
         self.bnbFiatValue = await dripUtils.calcBNBPrice()
         self.dripBnbRatio = one / nbOfDripForOneBnb

@@ -1,8 +1,13 @@
 <template>
   <div class="intro-y box p-5 mt-5">
-    <h2 :v-if="false" class="text-lg font-medium truncate mr-5">
-      Deposits distribution
-    </h2>
+    <div class="flex flex-row p-2">
+      <div>
+        <h2 class="text-lg font-medium truncate mr-5">Deposits distribution</h2>
+      </div>
+      <div>
+        <LoadingIcon v-if="isLoading" icon="spinning-circles" class="w-8 h-8" />
+      </div>
+    </div>
     <Chart
       :key="'theChart'"
       type="bar"
@@ -91,13 +96,16 @@ export default defineComponent({
   },
   async mounted() {
     try {
+      this.isLoading = true
       const stats = await getDepositsCounts([
         1, 10, 50, 100, 500, 1000, 2000, 5000
       ])
-
       this.chartData = stats.data.results
       this.chartDataTotalHolder = stats.data.sum
-    } catch (e) {}
+    } catch (e) {
+    } finally {
+      this.isLoading = false
+    }
   },
   setup() {
     const store = useStore()
@@ -107,7 +115,7 @@ export default defineComponent({
     const chartDataHolder = computed(() => chartData.value)
 
     const chartDataTotalHolder = ref(0)
-
+    const isLoading = ref(false)
     const chartBackgroudColor = computed(() => [
       '#6247aa',
       '#7251B5',
@@ -169,7 +177,8 @@ export default defineComponent({
       chartDataTotalHolder,
       chartData,
       chartLegend,
-      options
+      options,
+      isLoading
     }
   }
 })

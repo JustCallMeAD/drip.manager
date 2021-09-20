@@ -1,20 +1,24 @@
 <template>
-  <Message severity="info" :closable="false">
-    Section under construction
-  </Message>
-  <button @click="$refs.faucetDepositDropDown.show2()">Click me</button>
-  <FaucetDepositDropDown ref="faucetDepositDropDown"/>
+  <div class="grid grid-cols-12 gap-6 mt-12">
+    <div class="col-span-12 2xl:col-span-6 xl:pl-10">
+      <p class="text-3xl mb-6">RESERVOIR</p>
+      <DripReservoirCurrents />
+    </div>
+
+    <div class="col-span-12 2xl:col-span-6">
+      <div class="flex flex-col p-4">
+        <DripReservoirHistory />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import Message from 'primevue/message'
-import FaucetDepositDropDown from '@/views/faucet-deposit/Main.vue'
+import DripReservoirCurrents from '@/views/drip-reservoir-currents/Main.vue'
+import DripReservoirHistory from '@/views/drip-reservoir-history/Main.vue'
 export default defineComponent({
-  components: {
-    Message,
-    FaucetDepositDropDown
-  },
+  components: { DripReservoirCurrents, DripReservoirHistory },
   setup() {
     return {}
   }

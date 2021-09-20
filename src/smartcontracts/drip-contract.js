@@ -16,9 +16,9 @@ class DripContract {
       .call()
   }
 
-  setAllowance(address) {
+  setAllowance(address, value) {
     return this.contract.methods
-      .approve(addresses.FOUNTAIN_ADDRESS, 999999)
+      .approve(addresses.FOUNTAIN_ADDRESS, value || '999999000000000000000000')
       .send({ from: address })
   }
 }

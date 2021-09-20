@@ -24,7 +24,7 @@ export default defineComponent({
             method: 'eth_chainId'
           })
 
-          if (chainId == 0x38) {
+          if (chainId == 0x38 || chainId == 0x61) {
             store.dispatch('main/setUserAddress', accounts[0])
           } else {
             store.dispatch('main/setUserAddress', null)
@@ -32,11 +32,11 @@ export default defineComponent({
         }
       })
       window.ethereum.on('chainChanged', (chainId) => {
-        if (chainId != 0x38) {
-          store.dispatch('main/setUserAddress', null)
-        } else {
+        if (chainId == 0x38 || chainId == 0x61) {
           const address = window.ethereum.selectedAddress
           store.dispatch('main/setUserAddress', address)
+        } else {
+          store.dispatch('main/setUserAddress', null)
         }
       })
 
@@ -48,7 +48,7 @@ export default defineComponent({
             method: 'eth_chainId'
           })
 
-          if (chainId == 0x38) {
+          if (chainId == 0x38 || chainId == 0x61) {
             store.dispatch('main/setUserAddress', address)
           }
         }

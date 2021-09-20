@@ -1,5 +1,6 @@
 import FaucetContract from './faucet-contract.js'
 import FountainContract from './fountain-contract.js'
+import ReservoirContract from './reservoir-contract.js'
 import BuddyContract from './buddy-contract.js'
 import DripContract from './drip-contract.js'
 
@@ -40,6 +41,11 @@ export default {
   async getFaucetContract(userAddress) {
     return init()
       .then(() => new FaucetContract(web3, userAddress))
+      .catch((e) => console.log(e))
+  },
+  async getReservoirContract(userAddress) {
+    return init()
+      .then(() => new ReservoirContract(web3))
       .catch((e) => console.log(e))
   },
   async getFountainContract() {

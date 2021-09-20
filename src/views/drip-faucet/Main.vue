@@ -481,43 +481,10 @@
 
         <!-- BEGIN: Global statistics -->
         <div class="col-span-12 xl:col-span-3 intro-y">
-          <ReportPieChartDeposits :height="250" class="mt-3" />
+          <Airdrops />
         </div>
         <div class="col-span-12 xl:col-span-3 intro-y">
-          <div class="box p-5 mt-3">
-            <div class="flex">
-              <div class="text-base text-gray-600 mt-1">
-                &nbsp;Other statistics comming soon
-                <div class="progress">
-                  <div
-                    class="progress-bar w-1/2 bg-theme-1"
-                    role="progressbar"
-                    aria-valuenow="0"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <div class="progress mt-3">
-                  <div
-                    class="progress-bar w-2/3 bg-theme-1"
-                    role="progressbar"
-                    aria-valuenow="0"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-                <div class="progress mt-3">
-                  <div
-                    class="progress-bar w-3/4 bg-theme-1"
-                    role="progressbar"
-                    aria-valuenow="0"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ReportPieChartDeposits :height="250" class="mt-3" />
         </div>
       </div>
     </div>
@@ -530,6 +497,7 @@ import smManager from '@/smartcontracts/smartcontracts-manager'
 import dripUtils from '@/smartcontracts/drip-utils'
 import Message from 'primevue/message'
 import ReportPieChartDeposits from '@/components/report-pie-chart-deposits/Main.vue'
+import Airdrops from '@/components/report-airdrops/Main.vue'
 import PlayerLookupModal from '@/views/faucet-player-lookup-modal/Main.vue'
 import FaucetDepositDropDown from '@/views/faucet-deposit/Main.vue'
 import store from '@/store'
@@ -544,7 +512,8 @@ export default defineComponent({
     Message,
     ReportPieChartDeposits,
     PlayerLookupModal,
-    FaucetDepositDropDown
+    FaucetDepositDropDown,
+    Airdrops
   },
   async mounted() {
     try {
