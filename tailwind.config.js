@@ -25,7 +25,7 @@ module.exports = {
       xl: '1280px',
       // => @media (min-width: 1280px) { ... }
 
-      '2xl': '1536px',
+      '2xl': '1536px'
       // => @media (min-width: 1536px) { ... }
     },
     borderColor: (theme) => ({
@@ -103,5 +103,6 @@ module.exports = {
     extend: {
       boxShadow: ['dark']
     }
-  }
+  },
+  plugins: [require('@tailwindcss/aspect-ratio')]
 }

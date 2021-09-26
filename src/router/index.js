@@ -5,6 +5,7 @@ import DripFountain from '../views/drip-fountain/Main.vue'
 import DripReservoir from '../views/drip-reservoir/Main.vue'
 import DripTeam from '../views/drip-team/Main.vue'
 import DripCalculator from '../views/drip-calculator/Main.vue'
+import DripChart from '../views/drip-chart/Main.vue'
 import Inbox from '../views/inbox/Main.vue'
 import FileManager from '../views/file-manager/Main.vue'
 import PointOfSale from '../views/point-of-sale/Main.vue'
@@ -57,7 +58,6 @@ import TomSelect from '../views/tom-select/Main.vue'
 import FileUpload from '../views/file-upload/Main.vue'
 import WysiwygEditor from '../views/wysiwyg-editor/Main.vue'
 import Validation from '../views/validation/Main.vue'
-import Chart from '../views/chart/Main.vue'
 import Slider from '../views/slider/Main.vue'
 import ImageZoom from '../views/image-zoom/Main.vue'
 
@@ -90,6 +90,11 @@ const routes = [
         path: 'calculator',
         name: 'top-menu-calculator',
         component: DripCalculator
+      },
+      {
+        path: 'chart',
+        name: 'top-menu-chart',
+        component: DripChart
       },
       {
         path: 'inbox',
@@ -335,11 +340,6 @@ const routes = [
         path: 'validation',
         name: 'top-menu-validation',
         component: Validation
-      },
-      {
-        path: 'chart',
-        name: 'top-menu-chart',
-        component: Chart
       },
       {
         path: 'slider',

@@ -71,6 +71,14 @@ class ReservoirContract {
   async getRewards(address) {
     return await this.contract.methods.myDividends().call({ from: address })
   }
+
+  async compound(address) {
+    return await this.contract.methods.reinvest().send({ from: address })
+  }
+
+  async claim(address) {
+    return await this.contract.methods.withdraw().send({ from: address })
+  }
 }
 
 export default ReservoirContract

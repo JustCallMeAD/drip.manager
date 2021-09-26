@@ -8,19 +8,6 @@
         <div class="grid sm:grid-cols-2 gap-4">
           <div>
             <div class="text-gray-600 dark:text-gray-600 text-xs">
-              TOTAL <strong>DROPS</strong>
-            </div>
-            <div class="relative text-3xl font-medium">{{ drops }}</div>
-          </div>
-          <div>
-            <div class="text-gray-600 dark:text-gray-600 text-xs">
-              <strong>BNB</strong> EQUIVALENCE
-            </div>
-            <div class="relative text-3xl font-medium">{{ dropsBnbValue }}</div>
-          </div>
-
-          <div>
-            <div class="text-gray-600 dark:text-gray-600 text-xs mt-2">
               <strong>REWARDS</strong>
             </div>
             <div class="relative text-3xl font-medium align-text-bottom">
@@ -28,12 +15,23 @@
             </div>
           </div>
           <div>
+            <div class="text-gray-600 dark:text-gray-600 text-xs">
+              STAKE (%)
+            </div>
+            <div class="relative text-3xl font-medium">{{ share }} %</div>
+          </div>
+
+          <div>
             <div class="text-gray-600 dark:text-gray-600 text-xs mt-2">
-              EST. <strong>BNB</strong> DAILY REWARDS
+              TOTAL <strong>DROPS</strong>
             </div>
-            <div class="relative text-3xl font-medium">
-              {{ estDailyRewardBnb }}
+            <div class="relative text-3xl font-medium">{{ drops }}</div>
+          </div>
+          <div>
+            <div class="text-gray-600 dark:text-gray-600 text-xs mt-2">
+              <strong>BNB</strong> EQUIVALENCE
             </div>
+            <div class="relative text-3xl font-medium">{{ dropsBnbValue }}</div>
           </div>
         </div>
       </div>
@@ -51,11 +49,7 @@
           border-dashed
         "
       >
-        <div class="text-gray-600 dark:text-gray-600 text-xs">STAKE (%)</div>
-        <div class="mt-1.5 flex items-center">
-          <div class="text-base">{{ share }} %</div>
-        </div>
-        <div class="text-gray-600 dark:text-gray-600 text-xs mt-5">
+        <div class="text-gray-600 dark:text-gray-600 text-xs">
           BNB/DROP RATIO
         </div>
         <div class="mt-1.5 flex items-center">
@@ -67,7 +61,7 @@
           TOTAL INVESTED/WITHDRAWN (BNB)
         </div>
         <div class="mt-1.5 flex items-center">
-          <div class="text-base">{{invested}} / {{withdrawn}}</div>
+          <div class="text-base">{{ invested }} / {{ withdrawn }}</div>
         </div>
         <div class="text-gray-600 dark:text-gray-600 text-xs mt-5">
           COMPOUNDS / TOTAL (BNB)

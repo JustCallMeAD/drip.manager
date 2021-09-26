@@ -2,8 +2,9 @@
   <div class="intro-y mt-3">
     <div class="flex flex-col p-2">
       <div class="flex flex-row">
-        <div>
-          <h2 class="text-lg font-medium truncate mr-5">Airdrops history</h2>
+        <div class="flex flex-col">
+          <h2 class="text-lg font-medium truncate mr-5">Airdrops / Team bonuses history</h2>
+          <div class="flex ml-2"><UserCheckIcon fill="blue" />: <p class="text-xs">From your buddy</p></div>
         </div>
         <div>
           <LoadingIcon
@@ -24,7 +25,9 @@
               /></a>
             </div>
             <div class="text-right">{{ data.amount }} DRIP</div>
-            <div class="col-span-2">From: {{ data.from }}</div>
+            <div class="col-span-2">
+              From: {{ data.from }} <UserCheckIcon fill="blue" v-if="data.fromBuddy" />
+            </div>
           </div>
         </div>
       </div>
@@ -36,6 +39,7 @@
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
 import getAirdrops from '@/http/getAirdrops.js'
+import smManager from '@/smartcontracts/smartcontracts-manager'
 
 export default defineComponent({
   methods: {
@@ -67,12 +71,16 @@ export default defineComponent({
       try {
         this.isLoading = true
         const response = await getAirdrops(currentUserAddress)
+        const faucet = await smManager.getFaucetContract()
+        const buddyAddress = await faucet.getBuddyAddress(currentUserAddress)
+
         const list = []
         for (const current of response.data) {
           const amount = (current.amount / 10 ** 18).toFixed(2)
           list.push({
             id: current._id,
             transactionHash: current.transactionHash,
+            fromBuddy: buddyAddress == current.from,
             from:
               current.from.substr(0, 4) +
               '..' +

@@ -26,6 +26,12 @@ const state = () => {
         pageName: 'top-menu-calculator',
         title: 'Calculator',
         access: 'guest'
+      },
+      {
+        icon: 'PieChartIcon',
+        pageName: 'top-menu-chart',
+        title: 'Chart',
+        access: 'guest'
       }
     ]
   }
