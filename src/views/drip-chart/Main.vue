@@ -4,7 +4,7 @@
     <div class="col-span-12 sm:col-span-8 ">
       <iframe
         class="w-full h-screen object-contain"
-        src="https://z04415619-z34c86bff-gtw.qovery.io/"
+        src="https://drip-trading-view.herokuapp.com/"
         allowfullscreen
       ></iframe>
     </div>
