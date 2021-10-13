@@ -11,21 +11,71 @@
         </div>
 
         <div class="col-span-12 mt-3">
-          <div class="flex gap-3">
-            <button
-              :disabled="!isReady"
-              @click="this.compound"
-              class="btn btn-primary whitespace-nowrap"
+          <div class="p-3 box bg-gray-400">
+            <div
+              class="
+                flex flex-col
+                sm:flex-row
+                gap-3
+                items-center
+                justify-center
+              "
             >
-              <RefreshCwIcon class="w-4 h-4 mr-2" /> Compound {{ rewards }} BNB
-            </button>
-            <button
-              :disabled="!isReady"
-              @click="this.claim"
-              class="btn btn-primary whitespace-nowrap"
+              <div class="rounded-r-lg font-bold">Rewards</div>
+              <button
+                :disabled="!isReady"
+                @click="this.compound"
+                class="btn btn-primary whitespace-nowrap"
+              >
+                <RefreshCwIcon class="w-4 h-4 mr-2" /> Compound
+                {{ rewards }} BNB
+              </button>
+              <button
+                :disabled="!isReady"
+                @click="this.claim"
+                class="btn btn-primary whitespace-nowrap"
+              >
+                <DollarSignIcon class="w-4 h-4 mr-2" /> Claim {{ rewards }} BNB
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 mt-3">
+          <div class="p-3 box bg-gray-400">
+            <div
+              class="
+                flex flex-col
+                sm:flex-row
+                gap-3
+                items-center
+                sm:items-end
+                justify-center
+              "
             >
-              <DollarSignIcon class="w-4 h-4 mr-2" /> Claim {{ rewards }} BNB
-            </button>
+              <div class="font-bold">Buy & Deposit</div>
+              <div class="flex flex-col">
+                <div class="text-sm">Balance: {{bnbBalance}} BNB</div>
+                <input
+                  id="bnbToDrops"
+                  :disabled="!isReady"
+                  type="number"
+                  class="form-control w-32 align-baseline"
+                  placeholder="BNB"
+                  v-model="buyAmount"
+                />
+              </div>
+              <button
+                :disabled="!isReady"
+                autocomplete="off"
+                min="0"
+                @click="this.buyDrops"
+                class="btn btn-primary whitespace-nowrap"
+              >
+                <ShoppingCartIcon class="w-4 h-4 mr-2" />
+                Buy {{ buyDropsAmount }} DROPS
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -53,6 +103,24 @@ export default defineComponent({
     DripReservoirAprs
   },
   mounted() {
+    this.buyDrops = async function () {
+      var currentUserAddress = store.state.main.userAddress
+      try {
+        this.isReady = false
+        const reservoir = await smManager.getReservoirContract()
+        await reservoir.buy(
+          (this.buyAmount * 10 ** 18).toString(),
+          currentUserAddress
+        )
+        this.$refs.currents.updater()
+      } catch (e) {
+        alert(JSON.stringify(e))
+        console.log(JSON.stringify(e))
+      } finally {
+        this.isReady = true
+      }
+    }
+
     this.claim = async function () {
       var currentUserAddress = store.state.main.userAddress
       try {
@@ -92,6 +160,7 @@ export default defineComponent({
         return
       }
 
+      const bnbBalance = await smManager.getBnbBalanceOf(currentUserAddress)
       const reservoir = await smManager.getReservoirContract()
       const rewardsInDrops = await reservoir.getRewards(currentUserAddress)
       const rewardsInBnb = await reservoir.calculateLiquidityToBnb(
@@ -99,6 +168,8 @@ export default defineComponent({
       )
 
       this.rewards = dripUtils.convertFromWei(rewardsInBnb).toFixed(4)
+      this.bnbBalance = dripUtils.convertFromWei(bnbBalance).toFixed(4)
+
       this.isReady = true
     }
 
@@ -109,14 +180,33 @@ export default defineComponent({
       }
     )
 
+    watch(
+      computed(() => this.buyAmount),
+      async () => {
+        if (this.buyAmount < 0) {
+          this.buyAmount = 0
+          return
+        }
+        const reservoir = await smManager.getReservoirContract()
+        const buyDropsAmount =
+          await reservoir.calculateTaxedBnbToTokenLiquidity(
+            (this.buyAmount * 10 ** 18).toString()
+          )
+        this.buyDropsAmount = dripUtils
+          .convertFromWei(buyDropsAmount)
+          .toFixed(4)
+      }
+    )
     this.updater()
   },
   setup() {
     const rewards = ref(0)
-
+    const buyAmount = ref(0)
+    const buyDropsAmount = ref('0.0000')
+    const bnbBalance = ref(0)
     const isReady = ref(false)
 
-    return { rewards, isReady }
+    return { rewards, isReady, buyAmount, buyDropsAmount, bnbBalance }
   }
 })
 </script>

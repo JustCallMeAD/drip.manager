@@ -2,7 +2,9 @@ const primaryColors = require('@left4code/tw-starter/dist/js/colors')
 
 module.exports = {
   corePlugins: {
-    margin: true
+    margin: true,
+    verticalAlign: true,
+    animation: true
   },
   mode: 'jit',
   purge: [
@@ -101,8 +103,9 @@ module.exports = {
   variants: {
     textColor: ['responsive', 'hover', 'focus', 'group-hover'],
     extend: {
+      verticalAlign: ['hover', 'focus'],
       boxShadow: ['dark']
     }
   },
-  plugins: [require('@tailwindcss/aspect-ratio')]
+  plugins: []
 }

@@ -60,6 +60,10 @@ class ReservoirContract {
     return await this.contract.methods.calculateLiquidityToBnb(drops).call()
   }
 
+  async calculateTaxedBnbToTokenLiquidity(bnbSold) {
+    return await this.contract.methods.calculateTaxedBnbToTokenLiquidity(bnbSold).call()
+  }
+
   async getContractDropsBalance() {
     return await this.contract.methods.lockedTokenBalance().call()
   }
@@ -78,6 +82,10 @@ class ReservoirContract {
 
   async claim(address) {
     return await this.contract.methods.withdraw().send({ from: address })
+  }
+
+  async buy(bnbAmount, address) {
+    return await this.contract.methods.buy().send({ from: address, value: bnbAmount })
   }
 }
 
