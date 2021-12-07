@@ -214,14 +214,14 @@ export default defineComponent({
     const connect = async function () {
       if (window.ethereum) {
         try {
-          const chainId = await window.ethereum.request({
-            method: 'eth_chainId'
-          })
+          // const chainId = await window.ethereum.request({
+          //   method: 'eth_chainId'
+          // })
 
-          if (chainId != 0x38) {
-            alert('Your wallet must be connected to the BSC Mainnet network')
-            return
-          }
+          // if (chainId != 0x38) {
+          //   alert('Your wallet must be connected to the BSC Mainnet network')
+          //   return
+          // }
 
           if (!store.state.main.userAddress) {
             const accounts = await window.ethereum.request({

@@ -20,37 +20,37 @@ export default defineComponent({
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', async (accounts) => {
         if (accounts) {
-          const chainId = await window.ethereum.request({
-            method: 'eth_chainId'
-          })
+          // const chainId = await window.ethereum.request({
+          //   method: 'eth_chainId'
+          // })
 
-          if (chainId == 0x38 || chainId == 0x61) {
-            store.dispatch('main/setUserAddress', accounts[0])
-          } else {
-            store.dispatch('main/setUserAddress', null)
-          }
+          // if (chainId == 0x38 || chainId == 0x61) {
+          store.dispatch('main/setUserAddress', accounts[0])
+          // } else {
+          //   store.dispatch('main/setUserAddress', null)
+          // }
         }
       })
       window.ethereum.on('chainChanged', (chainId) => {
-        if (chainId == 0x38 || chainId == 0x61) {
-          const address = window.ethereum.selectedAddress
-          store.dispatch('main/setUserAddress', address)
-        } else {
-          store.dispatch('main/setUserAddress', null)
-        }
+        // if (chainId == 0x38 || chainId == 0x61) {
+        const address = window.ethereum.selectedAddress
+        store.dispatch('main/setUserAddress', address)
+        // } else {
+        //   store.dispatch('main/setUserAddress', null)
+        // }
       })
 
       try {
         const address = window.ethereum.selectedAddress
 
         if (address) {
-          const chainId = await window.ethereum.request({
-            method: 'eth_chainId'
-          })
+          // const chainId = await window.ethereum.request({
+          //   method: 'eth_chainId'
+          // })
 
-          if (chainId == 0x38 || chainId == 0x61) {
-            store.dispatch('main/setUserAddress', address)
-          }
+          // if (chainId == 0x38 || chainId == 0x61) {
+          store.dispatch('main/setUserAddress', address)
+          // }
         }
       } catch (error) {
         // user rejected permission
